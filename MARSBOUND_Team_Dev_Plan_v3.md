@@ -187,11 +187,11 @@ git clone <repo> && cd marsbound && npm install && git checkout -b ui
  
 ### Prompt 1A.2 — tests
  
-> Write `src/game/game.test.js` with vitest and run `npm test`. Tests: (1) a fresh game has O75 W70 P80 C75 S0, Sol 1, empty `history`. (2) Radiation A on Sol 1, then the night of Sol 2: Crew Health is not reduced by the storm. (3) Radiation never done with severity 3: Crew Health drops by 55 in the night of Sol 2. (4) Greenhouse A on Sol 1: after `endSol` the harvest is still in `pending`; after `startNextSol` Oxygen and Crew each gain 10. (5) Earth A on Sol 3: the +6 reply never arrives and `phase` is `'complete'`. (6) `history` records `{sol, cid, opt}` for each choice. (7) The full worked example in CLAUDE.md section 5.9 step by step, checking the numbers after every `endSol` and `startNextSol`. (8) Earth reply C with Power 8 or less: `startNextSol` ends the mission (`phase` is `'failed'`). Show me the test output.
+> Write `src/game/game.test.js` with vitest and run `npm test`. Tests: (1) a fresh game has O75 W70 P80 C75 S0, Sol 1, empty `history`. (2) Radiation A on Sol 1, then the night of Sol 2: Crew Health is not reduced by the storm. (3) Radiation never done with severity 3: Crew Health drops by 55 in the night of Sol 2. (4) Greenhouse A on Sol 1: after `endSol` the harvest is still in `pending`; after `startNextSol` Oxygen and Crew each gain 10. (5) Earth A on Sol 3: the +6 reply never arrives and `phase` is `'complete'`. (6) `history` records `{sol, cid, opt}` for each choice. (7) The full worked example in CLAUDE.md section 5.9 step by step, checking the numbers after every `endSol` and `startNextSol`. (8) Earth reply C with Power 8 or less: `startNextSol` ends the mission (`phase` is `'failed'`). (9) Earth A on Sol 1: after `endSol` the reply is still in `pending`; after `startNextSol` Power gains 6 on Sol 2. (10) Earth done on Sol 2 with Life Support C and Radiation A on Sol 1, then Earth A + Greenhouse A on Sol 2 and Power A on Sol 3: after `endSol` on Sol 2 the meters are O69 W43 P33 C81 S10; after `startNextSol` they are O79 W43 P39 C91 S10 (the Earth reply P+6 and the harvest both arrive); the final state is O75 W40 P30 C95 S10. Show me the test output.
  
 **What it does:** locks the rules in with tests.
 **Creates:** `src/game/game.test.js`.
-**Output:** `npm test` shows 8 passing tests.
+**Output:** `npm test` shows 10 passing tests.
  
 ### Manual checks (A)
 - [ ] All tests pass. Read each test once; they should assert the numbers in `CLAUDE.md` 5.9.
