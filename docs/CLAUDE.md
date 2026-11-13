@@ -206,7 +206,7 @@ Show **NOW → AFTER** per meter from `previewChoice`. If `includesNight`, title
 ## 8. Screens (8 screens + 3 pop-ups)
 Title → **Callsign** → Intro → Dashboard ⇄ Challenge → Confirm → Result → Sol Summary → … → Debrief. **Sources** opens from Title and Debrief. Layouts and text: `docs/WIREFRAMES.md` (follow it). Kid text: Complete Game Plan Part 7.
 
-**Look:** dark navy background, Mars-orange buttons, white text, rounded cards, text ≥ 18px, buttons ≥ 48px tall. Phone: meters in 2 columns, challenge cards in 1 column. Dashboard challenge cards show warning chips: Life Support "costs 8 Oxygen each night if not done", Power Budget "costs 4 Power each night if not done", Radiation "storm at end of Sol 2".
+**Look:** neumorphism (soft UI) on a dark navy base: raised cards and buttons, pressed (inset) meter tracks and text boxes, soft light/dark shadow pairs kept in CSS variables in `theme.css`, Mars-orange as the one accent, white text, large rounded corners. It must stay readable: strong text contrast, text ≥ 18px, buttons ≥ 48px tall with a visible pressed and focus state, and status shown as word + colour + icon (never shadows alone). Full rules: Visual rules in `docs/WIREFRAMES.md`. Phone: meters in 2 columns, challenge cards in 1 column. Dashboard challenge cards show warning chips: Life Support "costs 8 Oxygen each night if not done", Power Budget "costs 4 Power each night if not done", Radiation "storm at end of Sol 2".
 **Kid language:** short sentences (about 12 words). Explain each science word once (Sol, radiation, millisievert, DONKI).
 
 ### 8.1 Callsign (nickname)
