@@ -3,7 +3,7 @@
 These are text wireframes for **8 screens** and 3 pop-ups (Confirm, Result, NASA drawer). They match the current rules: nickname screen, no power-emergency pop-up (Power 0 ends the mission), a Confirm preview that warns before a mission-ending choice, and honest NASA data labels.
 
 **Notes on reading them**
-- `[ Button ]` is a button. `{name}` is the player's nickname (default "Commander"). `[date]` and `[class]` come from the real flare record in `state.event`.
+- `[ Button ]` is a button. `{commander}` is "Commander " + the nickname, or just "Commander" if the player skipped (never "Commander Commander"). `[date]` and `[class]` come from the real flare record in `state.event`.
 - Numbers in examples are real outputs of the game rules, not made up (see the worked example at the end).
 - 🟦 = **REAL NASA** badge. 🟧 = **GAME NUMBERS** badge. Both always show the words too.
 - Status always uses **word + colour + icon**: 🟢 Healthy (70–100) · 🟡 OK (40–69) · 🟠 Low (20–39) · 🔴 Critical (1–19) · ⚫ Empty (0).
@@ -86,7 +86,7 @@ Screens: Title, Callsign, Intro, Dashboard, Challenge, Sol Summary, Debrief, Sou
 │   [ MARS PHOTO / HABITAT ICON ]              │
 │                                              │
 │   1 of 4: "Landing successful!"              │
-│   Welcome, Commander {name}.                 │
+│   Welcome, {commander}.                 │
 │   You are in charge of a Mars outpost.       │
 │                                              │
 │                     [ NEXT ]    [ SKIP ]     │
@@ -95,7 +95,7 @@ Screens: Title, Callsign, Intro, Dashboard, Challenge, Sol Summary, Debrief, Sou
 
 | Slide | Heading | Text |
 |---|---|---|
-| 1 | Landing successful! | Welcome, Commander {name}. You are in charge of a Mars outpost. |
+| 1 | Landing successful! | Welcome, {commander}. You are in charge of a Mars outpost. |
 | 2 | Your job | Solve 5 challenges in 3 Sols. (A Sol is one day on Mars.) |
 | 3 | Every choice costs something | Air, water and power are shared. Fixing one thing can cost another. |
 | 4 | A storm is coming | Mission Control found a real NASA record of a solar flare. Get ready! |
@@ -231,7 +231,7 @@ Meters in 2 columns, cards in 1 column, buttons at least 48px tall.
 - Radiation on **Sol 3**: show a red line under the title: "⚠ The storm already passed. Shelter will not help now."
 - Challenges with later effects on Sol 3 (Greenhouse, Earth): show "⚠ This reward arrives after the mission ends."
 
-**Per-challenge content** (titles and short text for each option are in `docs/MARSBOUND_Complete_Game_Plan.md`, Part 7; numbers are in CLAUDE.md section 5.4):
+**Per-challenge content** (titles and short text for each option are in `docs/MARSBOUND_Complete_Game_Plan.md`, Part 7; numbers are in CLAUDE.md section 5.3):
 
 | Challenge | Screen title | Option chips (A / B / C) |
 |---|---|---|
@@ -263,7 +263,7 @@ Opens under the button on a laptop and as a **full-screen sheet on a phone**.
 │   takes in.)                                           │
 │                                                        │
 │ LESSON: Measure the danger before sending people.      │
-│ Source: Hassler et al., Science, 2013                  │
+│ Source: Hassler et al., Science, 2014                  │
 │ [ Open source ]                                        │
 │ 🟧 GAME NUMBERS: shelter costs in this game are        │
 │    simplified and simulated.                           │
@@ -276,7 +276,7 @@ The other four drawers use the same layout (title, 2–3 kid-friendly sentences,
 | L | ISS life support (ECLSS) and 98% water recovery |
 | R | Curiosity RAD radiation (above) |
 | W | NASA fission surface power project (at least 40 kW, still being developed) |
-| G | Veggie lettuce eaten on the ISS, 10 Aug 2015 |
+| G | NASA's Veggie space garden on the ISS (lettuce, first harvest in 2015, 33 days to harvest) |
 | M | Signal delay, about 4 to 24 minutes one way |
 
 ---
@@ -469,9 +469,9 @@ These numbers are the results of the worked example (Life Support C + Radiation 
 │                                                        │
 │ FACTS USED IN THE GAME                                 │
 │  • Radiation on Mars and on the trip: Curiosity RAD,   │
-│    Hassler et al., Science, 2013 [ link ]              │
+│    Hassler et al., Science, 2014 [ link ]              │
 │  • Signal delay (about 4–24 minutes): NASA [ link ]    │
-│  • Veggie lettuce on the ISS, 10 Aug 2015 [ link ]     │
+│  • Veggie space garden on the ISS (NASA) [ link ]      │
 │  • ISS life support and 98% water recovery [ link ]    │
 │  • Fission surface power project (in development)      │
 │    [ link ]                                            │
@@ -499,12 +499,12 @@ These numbers are the results of the worked example (Life Support C + Radiation 
 
 ## Text bank (Mission Control and fixed lines)
 
-`{name}` = nickname.
+`{commander}` = "Commander Nova", or just "Commander" if the player skipped.
 
 | When | Line |
 |---|---|
-| Start of Sol 1 | "Commander {name}, pick two jobs for today. A storm is coming at the end of Sol 2." |
-| Radiation not done, Sol 2 | "The storm is close, Commander {name}. Shelter the crew now!" |
+| Start of Sol 1 | "{commander}, pick two jobs for today. A storm is coming at the end of Sol 2." |
+| Radiation not done, Sol 2 | "The storm is close, {commander}. Shelter the crew now!" |
 | Oxygen < 40 | "Oxygen is low. Think about fixing the oxygen system." |
 | Water < 40 | "Water is low. Water shields and greenhouses use a lot." |
 | Power < 40 | "Power is low. Big jobs may drain the battery." |
@@ -532,7 +532,18 @@ These numbers are the results of the worked example (Life Support C + Radiation 
 | `ConfirmModal`, `ResultModal` | Challenge | `previewChoice` and result text |
 
 ## Visual rules (apply everywhere)
-- Dark navy background, Mars-orange buttons, white text, rounded cards.
+- **Style: neumorphism (soft UI).** Every screen and pop-up follows it. Dark navy base, with surfaces made of the same navy so they look softly raised or pressed into the page:
+  - **Raised** (cards, buttons, challenge and option cards, meters' frames): two soft shadows, a lighter one on the top-left and a darker one on the bottom-right.
+  - **Pressed** (meter tracks, text box, selected option, done challenge cards): the same two shadows turned inside (inset).
+  - Large rounded corners (about 16–24px). Smooth, low-noise surfaces. No hard borders and no flat bright blocks.
+  - **Mars-orange** is the one accent colour, used for the main button, the selected state and key numbers.
+  - Put the shadows in CSS variables (for example `--shadow-raised`, `--shadow-pressed`) in `theme.css` so every screen shares them.
+- **Neumorphism must not hurt readability.** It is soft by nature, so:
+  - Text stays white on navy, at least 18px, with strong contrast. Never use grey-on-grey text.
+  - Buttons are at least 48px tall and must look clickable (raised) and show a clear pressed state when tapped. Add a visible focus outline for keyboard use.
+  - Meters, badges and statuses use **word + colour + icon**, with a clearly different colour for each state. Soft shadows alone never carry meaning.
+  - The red mission-ending warning in the Confirm pop-up must be a bold, high-contrast block, not a soft one.
+  - The NASA drawer, Confirm and Result pop-ups need a darker backdrop behind them so they stand out.
 - Text at least 18px. Buttons at least 48px tall.
 - Every status uses **word + colour + icon**.
 - Short sentences (about 12 words). Explain every science word once.
