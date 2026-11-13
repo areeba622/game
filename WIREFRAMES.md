@@ -314,7 +314,8 @@ The other four drawers use the same layout (title, 2–3 kid-friendly sentences,
 │ extra −8 O (Life Support not done) and −4 P     │
 │ (Power Budget not done). Storm: not yet.        │
 ```
-(Check: Radiation B gives W−14 P−2 S+6 → W50 P71 S10; the night then gives O75−8−8=59, W50−3=47, P71−3−4=64.)
+Arriving tomorrow: 🫧 +5  🧑‍🚀 +5 (the Greenhouse C harvest).
+(Check: Radiation B gives W−14 P−2 S+6 → W50 P71 S10; the night then gives O75−8−8=59, W50−3=47, P71−3−4=64. Tomorrow's harvest is not included.)
 
 **Warnings** (red, shown only when they apply; the player may still confirm):
 ```text
@@ -324,7 +325,7 @@ The other four drawers use the same layout (title, 2–3 kid-friendly sentences,
 │   mission ends.                                      │
 │ ⚠ Earth's reply comes after the mission ends.        │   ← Earth on Sol 3
 ```
-- Values come from `previewChoice(state, cid, opt)`. Nothing changes until **Confirm**; Confirm dispatches `CHOOSE`.
+- Values come from `previewChoice(state, cid, opt)`: `after` for the table, `arriving` for the "Arriving tomorrow" line, `failed` for the red warning (it also warns if tomorrow's Earth reply would empty a meter). "After tonight" does not include tomorrow's arrivals. Nothing changes until **Confirm**; Confirm dispatches `CHOOSE`.
 
 ## Pop-up B — Result
 
@@ -353,7 +354,7 @@ The other four drawers use the same layout (title, 2–3 kid-friendly sentences,
 │               [  CONTINUE  ]                   │
 └────────────────────────────────────────────────┘
 ```
-After **Continue**: `phase` not active → Debrief · else `solIsFinished` → run `END_SOL`, then Sol Summary (or Debrief if the night ended the mission) · else back to the Dashboard.
+After **Continue**: `phase` not active → Debrief · else `solIsFinished` → dispatch `END_SOL` (the night), then Sol Summary (or Debrief if the night failed the mission or Sol 3 is over) · else back to the Dashboard.
 
 ---
 
@@ -390,7 +391,7 @@ Example for Sol 1 after Radiation B and Greenhouse C (storm size medium; no stor
 ```
 - Built from `state.log` entries (`storm`, `upkeep`, `penalty`) for this Sol and from `state.pending`.
 - On **end of Sol 2** the storm line shows one of: "☂ Your crew was sheltered. No harm." or "🌩 The storm hit! Crew Health −30." (value from severity).
-- After **Start Sol N**: show a short "Morning report" card with what arrived (`harvest`, `earthReply` log entries), e.g. "🌱 Your crops grew! 🫧 +5 🧑‍🚀 +5. 📡 Mission Control replied: …", then go to the Dashboard.
+- Pressing **Start Sol N** dispatches `START_SOL` (the morning: pending effects arrive, Sol number goes up). Then show a short "Morning report" card with what arrived (`harvest`, `earthReply` log entries), e.g. "🌱 Your crops grew! 🫧 +5 🧑‍🚀 +5. 📡 Mission Control replied: …", then go to the Dashboard.
 - **After Sol 3** no "Start Sol 4": the button reads **See Mission Debrief**, and the "arriving tomorrow" box becomes "Arrives after the mission: [list]" when something is still pending.
 
 ---
