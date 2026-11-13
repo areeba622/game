@@ -209,7 +209,7 @@ Backup-push `logic` every 30–45 minutes. When the checks pass: **PR P1 `logic`
  
 ### Prompt 1B.1 — theme and meter bar
  
-> Read CLAUDE.md first, then `docs/WIREFRAMES.md` (the "Visual rules" and "Components used" sections). Create the theme in `src/styles/theme.css`: dark navy background, Mars-orange primary buttons, white text, rounded cards, text at least 18px, buttons at least 48px tall, system fonts, and import it in the app. Build `src/components/ResourceBar.jsx` with props `label`, `icon`, `value` (0–100): a CSS bar, the number, and the status from `statusLabel(value)` shown as word + colour + icon (never colour alone). Use plain CSS for the bar. Do not install any packages. Then show me a temporary preview of four bars with values 80, 55, 30 and 10 (remove the preview when I say so).
+> Read CLAUDE.md first, then `docs/WIREFRAMES.md` (the "Visual rules" and "Components used" sections). Create the theme in `src/styles/theme.css` in a neumorphism (soft UI) style as described in the "Visual rules" of `docs/WIREFRAMES.md`: dark navy base, raised cards and buttons, pressed (inset) meter tracks and text boxes, soft light and dark shadow pairs stored as CSS variables (`--shadow-raised`, `--shadow-pressed`), Mars-orange as the only accent colour, white text, large rounded corners, text at least 18px, buttons at least 48px tall with a clear pressed and focus state, system fonts, and import it in the app. Keep strong text contrast and never use shadows alone to show a status. Build `src/components/ResourceBar.jsx` with props `label`, `icon`, `value` (0–100): a CSS bar, the number, and the status from `statusLabel(value)` shown as word + colour + icon (never colour alone). Use plain CSS for the bar. Do not install any packages. Then show me a temporary preview of four bars with values 80, 55, 30 and 10 (remove the preview when I say so).
  
 **What it does:** sets the look and the reusable meter.
 **Creates:** `src/styles/theme.css`, `src/components/ResourceBar.jsx`.
@@ -252,6 +252,7 @@ Do this after the Intro screen works. Fill in the three `[ ]` parts from the NAS
 - [ ] A nickname with 1 character or 17 characters is rejected; Skip gives "Commander".
 - [ ] The Dashboard looks right at laptop width and at phone width (use browser dev tools).
 - [ ] Status shows words + icons, not only colour. Text is at least 18px; buttons at least 48px.
+- [ ] Neumorphism check: cards and buttons look raised, meter tracks and the text box look pressed, text is easy to read on every card, and the pressed and focus states are visible.
 - [ ] Compare with `WIREFRAMES.md` Screens 1–4. Note anything missing.
 - [ ] Mars photo (Intro slide 1): loads on laptop and phone; text is readable; caption and credit match the NASA page word for word; file is under about 500 KB; game works with Wi-Fi off; the Sources screen lists the credit line; the caption does not suggest our base is real (it is a real photo of Mars, not of our outpost).
 - [ ] `npm run build` passes.
