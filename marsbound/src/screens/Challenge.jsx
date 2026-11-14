@@ -1,26 +1,146 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { CHALLENGES } from '../game/challenges.js';
+import { statusLabel } from '../game/game.js';
+import OptionCard from '../components/OptionCard.jsx';
+import NasaDrawer from '../components/NasaDrawer.jsx';
+import { METERS, METER_INFO } from '../components/kidText.js';
 
+// Screen 5 — Challenge (docs/WIREFRAMES.md): situation, 3 options, NASA drawer.
 export default function Challenge({ state, dispatch, go, selectedChallenge, actions }) {
-  const [awaitingResult, setAwaitingResult] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [chosen, setChosen] = useState(null); // option letter waiting for Confirm
+  const [step, setStep] = useState(null); // TEMP: null | 'confirm' | 'result' (Prompt 2B.2 replaces this)
 
-  function handleChoose() {
-    dispatch({ type: 'CHOOSE', cid: selectedChallenge, opt: 'A' });
-    setAwaitingResult(true);
+  const cid = selectedChallenge;
+  const challenge = CHALLENGES[cid];
+
+  if (!challenge) {
+    return (
+      <main className="screen">
+        <button type="button" onClick={() => go('dashboard')}>
+          ← Back
+        </button>
+      </main>
+    );
   }
 
-  // Waits for the CHOOSE dispatch above to land in `state` (next render)
-  // before asking App.jsx to decide where to go next.
-  useEffect(() => {
-    if (awaitingResult) {
-      setAwaitingResult(false);
-      actions.continueAfterResult();
-    }
-  }, [state, awaitingResult, actions]);
+  const isLastSol = state.sol >= 3;
+  const hasLater = Object.values(challenge.options).some((o) => o.later);
+
+  function handleChoose(letter) {
+    setChosen(letter);
+    setStep('confirm');
+  }
+
+  // TEMP until ConfirmModal / ResultModal (Prompt 2B.2).
+  function tempConfirm() {
+    dispatch({ type: 'CHOOSE', cid, opt: chosen });
+    setStep('result');
+  }
 
   return (
-    <div className="screen screen-challenge">
-      <h1>Challenge ({selectedChallenge})</h1>
-      <button onClick={handleChoose}>Continue</button>
-    </div>
+    <main className="screen screen-challenge">
+      <header className="challenge-header card">
+        <button type="button" onClick={() => go('dashboard')}>
+          ← Back
+        </button>
+        <h1 className="challenge-header__title">
+          <span aria-hidden="true">{challenge.icon}</span> {challenge.title.toUpperCase()}
+        </h1>
+        <span className="challenge-header__sol">SOL {state.sol}</span>
+      </header>
+
+      {isLastSol && cid === 'R' && (
+        <p className="warning-danger">
+          <span aria-hidden="true">⚠</span> The storm already passed. Shelter will not help now.
+        </p>
+      )}
+      {isLastSol && hasLater && (
+        <p className="warning-danger">
+          <span aria-hidden="true">⚠</span> This reward arrives after the mission ends.
+        </p>
+      )}
+
+      <section className="card challenge-situation">
+        <p className="challenge-situation__intro">{challenge.intro}</p>
+        <div className="now-meters" aria-label="Meters now">
+          <span className="now-meters__label">Now:</span>
+          {METERS.map((m) => {
+            const status = statusLabel(state[m.key]);
+            return (
+              <span key={m.key} className={`now-meter status-${status.word.toLowerCase()}`}>
+                <span aria-hidden="true">{m.icon}</span>
+                <span className="sr-only">{m.label}</span> {state[m.key]}{' '}
+                <span className="status-word">
+                  <span className="status-icon" aria-hidden="true">{status.icon}</span>
+                  {status.word}
+                </span>
+              </span>
+            );
+          })}
+          <span className="now-meter">
+            <span aria-hidden="true">{METER_INFO.S.icon}</span>
+            <span className="sr-only">{METER_INFO.S.label}</span> {state.S}
+          </span>
+        </div>
+      </section>
+
+      <section className="challenge-options" aria-label="Options">
+        {['A', 'B', 'C'].map((letter) => (
+          <OptionCard
+            key={letter}
+            letter={letter}
+            option={challenge.options[letter]}
+            cid={cid}
+            sol={state.sol}
+            onChoose={handleChoose}
+          />
+        ))}
+      </section>
+
+      <section className="challenge-nasa">
+        <button
+          type="button"
+          aria-expanded={drawerOpen}
+          aria-controls="nasa-drawer-slot"
+          onClick={() => setDrawerOpen((open) => !open)}
+        >
+          <span aria-hidden="true">🛰</span> How NASA handles this {drawerOpen ? '▲' : '▼'}
+        </button>
+        <div id="nasa-drawer-slot">
+          {drawerOpen && <NasaDrawer challengeId={cid} onClose={() => setDrawerOpen(false)} />}
+        </div>
+      </section>
+
+      {/* TEMP stand-in for the Confirm and Result pop-ups (Prompt 2B.2 replaces this block). */}
+      {step && (
+        <div className="backdrop" role="dialog" aria-modal="true" aria-label="Confirm choice">
+          <div className="card temp-modal">
+            {step === 'confirm' ? (
+              <>
+                <p>
+                  YOU SELECTED: {chosen}. {challenge.options[chosen].title}
+                </p>
+                <div className="temp-modal__actions">
+                  <button type="button" className="btn-primary" onClick={tempConfirm}>
+                    Confirm
+                  </button>
+                  <button type="button" onClick={() => setStep(null)}>
+                    Change choice
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <p>DECISION COMPLETE. You chose: {chosen}. {challenge.options[chosen].title}</p>
+                <button type="button" className="btn-primary" onClick={actions.continueAfterResult}>
+                  Continue
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+    </main>
   );
 }

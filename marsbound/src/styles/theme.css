@@ -770,6 +770,199 @@ input[type='text']:focus-visible {
   }
 }
 
+/* ---------- Screen-reader-only text ---------- */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Effect chips (gains green +, costs orange −) ---------- */
+
+.effect-chips {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  vertical-align: middle;
+}
+
+.effect-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-pressed-sm);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.effect-chip.is-gain { color: var(--status-healthy); }
+.effect-chip.is-cost { color: var(--status-low); }
+
+/* ---------- Morning report (Dashboard) ---------- */
+
+.morning-report__title {
+  font-size: var(--font-lg);
+  margin: 0 0 10px;
+}
+
+.morning-report__list {
+  list-style: none;
+  margin: 0 0 16px;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+/* ---------- Screen 5: Challenge ---------- */
+
+.screen-challenge {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.challenge-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
+  padding: 14px 18px;
+}
+
+.challenge-header__title {
+  flex: 1 1 auto;
+  font-size: var(--font-xl);
+  margin: 0;
+  text-align: center;
+}
+
+.challenge-header__sol {
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.challenge-situation__intro {
+  font-size: var(--font-lg);
+}
+
+.now-meters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 20px;
+  margin-top: 8px;
+}
+
+.now-meters__label {
+  font-weight: 800;
+}
+
+.now-meter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.challenge-options {
+  display: grid;
+  gap: 20px;
+}
+
+.option-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.option-card__title {
+  font-size: var(--font-lg);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin: 0;
+}
+
+.option-card__text {
+  margin: 0;
+}
+
+.option-card__chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+}
+
+.option-card__tag {
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.option-card__tag.is-safe { color: var(--status-healthy); }
+.option-card__tag.is-warn { color: var(--status-low); }
+
+.option-card__later {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.option-card__later-label {
+  font-weight: 800;
+}
+
+.option-card__choose {
+  align-self: flex-end;
+  min-width: 160px;
+}
+
+.challenge-nasa {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.challenge-nasa > button {
+  align-self: flex-start;
+}
+
+/* TEMP: stand-in pop-up until ConfirmModal / ResultModal (Prompt 2B.2) */
+.temp-modal {
+  width: 100%;
+  max-width: 520px;
+}
+
+.temp-modal__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+@media (max-width: 719px) {
+  .challenge-header__title {
+    order: 3;
+    flex-basis: 100%;
+    text-align: left;
+  }
+
+  .option-card__choose {
+    align-self: stretch;
+  }
+}
+
 .callsign-error {
   margin: 0;
   font-weight: 800;
