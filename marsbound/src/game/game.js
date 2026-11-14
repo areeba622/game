@@ -143,23 +143,32 @@ export function startNextSol(state) {
   return next;
 }
 
-// STUB: only applies the chosen option's effects; ignores night effects,
-// "later" arrivals, and failure detection.
 export function previewChoice(state, cid, opt) {
-  const option = CHALLENGES[cid].options[opt];
-  const after = { O: state.O, W: state.W, P: state.P, C: state.C, S: state.S };
+  let current = choose(state, cid, opt);
+  let failed = current.phase === 'failed';
+  let failReason = current.failReason;
 
-  for (const [key, amount] of Object.entries(option.effects)) {
-    after[key] = key === 'S' ? after[key] + amount : clamp(after[key] + amount);
+  const includesNight = solIsFinished(current);
+  if (includesNight) {
+    current = endSol(current);
+    if (current.phase === 'failed') {
+      failed = true;
+      failReason = current.failReason;
+    }
   }
 
-  return {
-    after,
-    includesNight: false,
-    arriving: [],
-    failed: false,
-    failReason: null,
-  };
+  const after = { O: current.O, W: current.W, P: current.P, C: current.C, S: current.S };
+  const arriving = includesNight ? current.pending : [];
+
+  if (!failed && current.phase === 'active' && current.sol < 3) {
+    const tomorrow = startNextSol(current);
+    if (tomorrow.phase === 'failed') {
+      failed = true;
+      failReason = tomorrow.failReason;
+    }
+  }
+
+  return { after, includesNight, arriving, failed, failReason };
 }
 
 export function outcome(state) {

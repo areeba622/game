@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { newGame, choose, endSol, startNextSol } from './game.js';
+import { newGame, choose, endSol, startNextSol, previewChoice } from './game.js';
 
 describe('newGame', () => {
   it('starts with the values from CLAUDE.md 5.7', () => {
@@ -196,5 +196,59 @@ describe('choose guards', () => {
     const s2 = choose(s1, 'L', 'B');
 
     expect(s2).toBe(s1);
+  });
+});
+
+describe('previewChoice', () => {
+  it('does not mutate the original state', () => {
+    const s = newGame(1);
+    const snapshot = JSON.parse(JSON.stringify(s));
+
+    previewChoice(s, 'L', 'A');
+
+    expect(s).toEqual(snapshot);
+  });
+
+  it('on the last job of a Sol, includes the night', () => {
+    let s = newGame(1);
+    s = choose(s, 'L', 'A'); // 1 of 2 for Sol 1
+
+    const preview = previewChoice(s, 'R', 'C'); // 2 of 2: finishes the Sol
+
+    expect(preview.includesNight).toBe(true);
+  });
+
+  it('shows the Greenhouse C harvest in arriving', () => {
+    let s = newGame(1);
+    s = choose(s, 'L', 'B'); // 1 of 2 for Sol 1
+
+    const preview = previewChoice(s, 'G', 'C'); // 2 of 2: finishes the Sol
+
+    expect(preview.includesNight).toBe(true);
+    expect(preview.arriving).toEqual([{ cid: 'G', effects: { O: 5, C: 5 } }]);
+  });
+
+  it('reports failed:true when the option would take Power to 0', () => {
+    let s = newGame(1);
+    s = { ...s, P: 20 };
+
+    const preview = previewChoice(s, 'W', 'B'); // Power -20
+
+    expect(preview.failed).toBe(true);
+    expect(preview.failReason).toBe('power');
+  });
+
+  it("reports failed:true when tomorrow's Earth reply would empty a meter", () => {
+    let s = newGame(1);
+    s = { ...s, P: 17 };
+    s = choose(s, 'M', 'C'); // P -2 -> 15
+
+    const preview = previewChoice(s, 'G', 'B'); // finishes Sol 1 quota
+
+    // Sol 1 night: upkeep -3, Power Budget unfinished -4 -> P = 8 (not yet failed)
+    // Morning: Earth reply P -8 -> 0
+    expect(preview.includesNight).toBe(true);
+    expect(preview.failed).toBe(true);
+    expect(preview.failReason).toBe('power');
   });
 });
