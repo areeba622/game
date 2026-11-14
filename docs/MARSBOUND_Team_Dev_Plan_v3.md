@@ -10,7 +10,8 @@
 | `NASA_DATA_VERIFIED.md` | `docs/` |
 | `spaceWeatherEvents.json` | `docs/` (master copy) and later `src/data/` |
 | `PHASE3A_data_prompt.md` | `docs/` |
-| `MARSBOUND_Complete_Game_Plan.md` | `docs/` (use only Part 7, the kid text) |
+| `KID_TEXT.md` | `docs/` (kid text: option titles, text, icons) |
+| `MARSBOUND_Complete_Game_Plan.md` | `docs/` (old; optional, do not use for build) |
 | `MARSBOUND_Game_Overview.md` | `docs/` |
 | this plan | `docs/` |
  
@@ -38,7 +39,7 @@ statusLabel(value)                     // -> { word, color, icon }
 // src/game/storm.js      pickStorm(events) -> one record
 // src/data/nasaContent.js  NASA_CONTENT[challengeId], SPACE_WEATHER_LABEL, RADIATION_BARS
 // App.jsx: reducer actions START{severity,event,nickname} | CHOOSE{cid,opt} | END_SOL | START_SOL
-//          screens get props { state, dispatch, go }; go('challenge','R') opens a challenge; startMission(nickname) starts a game
+//          screens get props { state, dispatch, go, selectedChallenge, morningReport, actions }; go('challenge','R') opens a challenge; actions = { startMission, continueAfterResult, startMorning, clearMorningReport, playAgain, restart } built in App.jsx by Person A (CLAUDE.md 5.10)
 // state = { sol,O,W,P,C,S, done:{}, history:[{sol,cid,opt}], doneThisSol, sheltered, pending:[], severity, event,
 //           nickname, phase:'active'|'failed'|'complete', failReason, log:[{sol,kind,text}] }
 ```
@@ -159,6 +160,17 @@ Full details are in `CLAUDE.md` sections 5.4, 5.7, 5.8 and 5.10.
 **Creates:** `src/App.jsx`, `src/screens/{Title,Callsign,Intro,Dashboard,Challenge,SolSummary,Debrief,Sources}.jsx`, `src/components/NasaDrawer.jsx`, `src/data/nasaContent.js`.
 **Output you should see:** `npm run dev` opens an ugly page. Clicking through goes Title → Callsign → Intro → Dashboard → Challenge → … → Debrief. No errors in the console.
  
+### Prompt 0.3 — App actions and kid-text sync (A)
+ 
+Do this after Prompts 0.1 and 0.2 (it can ride along in the same PR as Phase 1A). Person B needs it before the Result and Sol Summary screens.
+ 
+> Read CLAUDE.md first, section 5.10, and `docs/KID_TEXT.md`. Task 1: in `src/App.jsx` build the `actions` object described in section 5.10 (`startMission`, `continueAfterResult`, `startMorning`, `clearMorningReport`, `playAgain`, `restart`) and pass `{ state, dispatch, go, selectedChallenge, morningReport, actions }` to every screen. Compute the next state locally with the pure functions (`endSol`, `startNextSol`) and also dispatch the matching action. `startMorning` fills `morningReport` with the new `harvest` / `earthReply` log entries. Update the placeholder screens to use `actions` instead of calling `startMission` or deciding the next screen themselves. Task 2: in `src/game/challenges.js` change ONLY the `icon`, `title`, `intro` and option `title` and `text` fields to match `docs/KID_TEXT.md`. Do not change any `effects`, `later` or `sheltered` value. Do not install packages. Tell me what you changed.
+ 
+**What it does:** gives every screen one place to ask "what happens next", and makes the kid-facing words match the docs.
+**Changes:** `src/App.jsx`, the placeholder screens, `src/game/challenges.js` (words and icons only).
+**Output:** the placeholder app still clicks through. Result → Continue and Sol Summary → Start work through `actions`. Option titles and icons match `KID_TEXT.md`.
+**Check by hand:** `git diff src/game/challenges.js` shows no change to any number.
+ 
 ### Manual checks (A)
 - [ ] `npm run dev` works and you can click through every screen.
 - [ ] `challenges.js`: compare all 15 options with `CLAUDE.md` section 5.3 number by number.
@@ -179,7 +191,7 @@ git clone <repo> && cd marsbound && npm install && git checkout -b ui
  
 ### Prompt 1A.1 — real logic
  
-> Read CLAUDE.md first. Replace the stubs in `src/game/game.js` with the real logic for `choose`, `endSol`, `startNextSol` and `outcome`. Follow CLAUDE.md sections 5.1 to 5.6 **exactly**. Keep all option numbers in `src/game/challenges.js` and have `game.js` read them from there. Never mutate the old state; always return a new object. Clamp O, W, P, C to 0–100 after every change. In `choose`: apply `effects`, mark the challenge done, append `{sol, cid, opt}` to `history`, increase `doneThisSol`, set `sheltered` only for Radiation A or B on Sol 1 or Sol 2, queue the option's `later` effects into `pending`, then check for failure (any of O, W, P, C equal to 0 → `phase = 'failed'` with a `failReason`). `endSol` is only the NIGHT: storm (end of Sol 2 only, only if not sheltered), upkeep (also on Sol 3), unfinished-problem penalties, failure check, and `phase = 'complete'` after Sol 3; it leaves `pending` untouched. `startNextSol` is only the MORNING: apply pending effects, add `harvest` and `earthReply` log entries, clear `pending`, `sol + 1`, `doneThisSol = 0`, then a failure check. Add readable `state.log` entries (`{sol, kind, text}`) for storm, upkeep, penalty, harvest and earthReply. Make `outcome(state)` follow CLAUDE.md 5.5. If anything is unclear, ask me before guessing. Do not change any numbers.
+> Read CLAUDE.md first. Replace the stubs in `src/game/game.js` with the real logic for `choose`, `endSol`, `startNextSol` and `outcome`. Follow CLAUDE.md sections 5.1 to 5.7 **exactly**. Keep all option numbers in `src/game/challenges.js` and have `game.js` read them from there. Never mutate the old state; always return a new object. Clamp O, W, P, C to 0–100 after every change. In `choose`: if the challenge is already done or `phase` is not `'active'`, return the state unchanged; otherwise apply `effects`, mark the challenge done, append `{sol, cid, opt}` to `history`, increase `doneThisSol`, set `sheltered` only for Radiation A or B on Sol 1 or Sol 2, queue the option's `later` effects into `pending`, then check for failure (any of O, W, P, C equal to 0 → `phase = 'failed'` with a `failReason`). `endSol` is only the NIGHT: storm (end of Sol 2 only, only if not sheltered), upkeep (also on Sol 3), unfinished-problem penalties, failure check, and `phase = 'complete'` after Sol 3; it leaves `pending` untouched. `startNextSol` is only the MORNING (it does nothing unless `phase` is `'active'` and `sol < 3`): apply pending effects, add `harvest` and `earthReply` log entries, clear `pending`, `sol + 1`, `doneThisSol = 0`, then a failure check. Add readable `state.log` entries (`{sol, kind, text}`) for storm, upkeep, penalty, harvest and earthReply. Make `outcome(state)` follow CLAUDE.md 5.5. If anything is unclear, ask me before guessing. Do not change any numbers.
  
 **What it does:** turns the stubs into the real rules.
 **Changes:** `src/game/game.js` (and only reads `challenges.js`).
@@ -203,7 +215,7 @@ Backup-push `logic` every 30–45 minutes. When the checks pass: **PR P1 `logic`
  
 ---
  
-## PHASE 1B — Theme, Title, Callsign, Intro, Dashboard (B, 2 h 15)
+## PHASE 1B — Theme, Title, Callsign, Intro, Dashboard (B, 2 h 30)
  
 **Branch:** `ui`. Runs in parallel with 1A and 2A, on the stub.
  
@@ -217,7 +229,7 @@ Backup-push `logic` every 30–45 minutes. When the checks pass: **PR P1 `logic`
  
 ### Prompt 1B.2 — Title and Callsign
  
-> Read CLAUDE.md first, especially section 8.1. Build `src/screens/Title.jsx` (Screen 1 in `docs/WIREFRAMES.md`) and `src/screens/Callsign.jsx` (Screen 2). Title: name MARSBOUND, tagline, a Start Mission button (goes to Callsign) and a Sources & Data button (goes to Sources). Callsign: "What should we call you, Commander?", a text box, three tap-to-fill chips (Nova, Comet, Orbit), the line "Use a nickname, not your real name.", Continue and Skip. Trim spaces; require 2–16 characters; show a friendly message if invalid. Continue calls `startMission(nickname)`; Skip calls `startMission('Commander')`. Do not save the nickname to localStorage, cookies or any server. Render it as plain text. Replace the placeholder files; do not change `src/game/*` or `App.jsx` (if you need a change there, tell me).
+> Read CLAUDE.md first, especially section 8.1. Build `src/screens/Title.jsx` (Screen 1 in `docs/WIREFRAMES.md`) and `src/screens/Callsign.jsx` (Screen 2). Title: name MARSBOUND, tagline, a Start Mission button (goes to Callsign) and a Sources & Data button (goes to Sources). Callsign: "What should we call you, Commander?", a text box, three tap-to-fill chips (Nova, Comet, Orbit), the line "Use a nickname, not your real name.", Continue and Skip. Trim spaces; require 2–16 characters; show a friendly message if invalid. Continue calls `actions.startMission(nickname)`; Skip calls `actions.startMission('Commander')`. Allowed characters: letters, digits, single spaces, `-` and `_` (no emoji or symbols); error text "Use 2 to 16 letters or numbers". Do not save the nickname to localStorage, cookies or any server. Render it as plain text. Replace the placeholder files; do not change `src/game/*` or `App.jsx` (if you need a change there, tell me).
  
 **What it does:** the first two screens, including the nickname.
 **Creates/changes:** `src/screens/Title.jsx`, `src/screens/Callsign.jsx`.
@@ -225,7 +237,7 @@ Backup-push `logic` every 30–45 minutes. When the checks pass: **PR P1 `logic`
  
 ### Prompt 1B.3 — Intro
  
-> Read CLAUDE.md first. Build `src/screens/Intro.jsx` (Screen 3 in `docs/WIREFRAMES.md`) with the first two slides only (slide 1: "Landing successful!" with "Welcome, {commander}"; slide 2: "Your job: solve 5 challenges in 3 Sols"), dot progress, Next and Skip. `{name}` is `state.nickname`. After the last slide go to the Dashboard. Leave a clear comment where slides 3 and 4 will be added on Day 2.
+> Read CLAUDE.md first. Build `src/screens/Intro.jsx` (Screen 3 in `docs/WIREFRAMES.md`) with the first two slides only (slide 1: "Landing successful!" with "Welcome, {commander}"; slide 2: "Your job: solve 5 challenges in 3 Sols"), dot progress, Next and Skip. `{commander}` comes from `commanderName(state)` in `src/components/commander.js` (create it: "Commander " + nickname, or just "Commander" when the nickname is 'Commander'). After the last slide go to the Dashboard. Leave a clear comment where slides 3 and 4 will be added on Day 2.
  
 **Creates/changes:** `src/screens/Intro.jsx`.
 **Output:** two slides with dots; "Welcome, Commander Nova"; Next goes to the Dashboard.
@@ -354,7 +366,7 @@ Open all 6 links in `docs/spaceWeatherEvents.json`. On each page check the class
  
 ### Prompt 2B.2 — Confirm and Result
  
-> Read CLAUDE.md first, section 6, and `docs/WIREFRAMES.md` (Confirm and Result pop-ups). Build `src/components/ConfirmModal.jsx` and `src/components/ResultModal.jsx`. Confirm calls `previewChoice(state, cid, opt)` and shows NOW → AFTER for each meter. If `includesNight` is true the column is titled "AFTER TONIGHT" and a line lists tomorrow's arrivals from `arriving`. If `failed` is true show the red warning "If you choose this, the mission ends." (the player may still confirm). For Greenhouse or Earth on Sol 3 show the "arrives after the mission ends" warning. Nothing changes until Confirm, which dispatches `CHOOSE`. Result shows what changed, a short what-happened line, the real-NASA lines from the wireframe where they apply, and a Continue button. On Continue follow CLAUDE.md section 5.10: if `state.phase` is not `'active'` go to `'debrief'`; else if `solIsFinished(state)` dispatch `END_SOL`, then go to `'debrief'` if `phase` is `'failed'` or `'complete'`, otherwise go to `'solSummary'`; else go to `'dashboard'`.
+> Read CLAUDE.md first, section 6, and `docs/WIREFRAMES.md` (Confirm and Result pop-ups). Build `src/components/ConfirmModal.jsx` and `src/components/ResultModal.jsx`. Confirm calls `previewChoice(state, cid, opt)` and shows NOW → AFTER for each meter. If `includesNight` is true the column is titled "AFTER TONIGHT" and a line lists tomorrow's arrivals from `arriving`. If `failed` is true show the red warning "If you choose this, the mission ends." (the player may still confirm). For Greenhouse or Earth on Sol 3 show the "arrives after the mission ends" warning. Nothing changes until Confirm, which dispatches `CHOOSE`. Result shows what changed, a short what-happened line, the real-NASA lines from the wireframe where they apply, and a Continue button. On Continue call `actions.continueAfterResult()`. Do not work out the next screen yourself and do not call `endSol` in the screen.
  
 **Creates/changes:** `src/components/ConfirmModal.jsx`, `ResultModal.jsx`.
 **Output:** choosing an option shows a before/after table; Confirm shows the result; Continue returns to the Dashboard or moves to the Sol Summary.
@@ -402,13 +414,13 @@ Small PRs into `main` (P7), one per fix.
  
 ### Prompt 3B.1 — Sol Summary
  
-> Read CLAUDE.md first, section 5.10, and `docs/WIREFRAMES.md` (Screen 6). Build `src/screens/SolSummary.jsx`: what the player did today (from `state.history` for the Sol that just ended), tonight's changes from `state.log` (storm, upkeep, penalty for that Sol), the meters, what arrives tomorrow from `state.pending`, and a "Start Sol N" button. On the button: dispatch `START_SOL`, show a short "Morning report" card with what arrived (the `harvest` and `earthReply` log entries), then go to the Dashboard, or to the Debrief if `phase` is `'failed'`. After Sol 3 the button reads "See Mission Debrief" and goes to the Debrief; the "arriving tomorrow" box becomes "Arrives after the mission" when something is still pending.
+> Read CLAUDE.md first, section 5.10, and `docs/WIREFRAMES.md` (Screen 6). Build `src/screens/SolSummary.jsx`: what the player did today (from `state.history` for the Sol that just ended), tonight's changes from `state.log` (storm, upkeep, penalty for that Sol), the meters, what arrives tomorrow from `state.pending`, and a "Start Sol N" button. The button calls `actions.startMorning()` (after Sol 3, when `state.phase === 'complete'`, it reads "See Mission Debrief" and the same call opens the Debrief). Do not dispatch or navigate yourself. The "arriving tomorrow" box becomes "Arrives after the mission" when something is still pending after Sol 3. The morning report card is shown on the Dashboard from `morningReport` (the `harvest` and `earthReply` entries) with a dismiss button that calls `actions.clearMorningReport()`.
  
 **Output:** the example from the wireframe (Sol 1: Radiation B + Greenhouse C) shows O59 W47 P64 C75 S10 and "arriving tomorrow: Oxygen +5, Crew +5".
  
 ### Prompt 3B.2 — Debrief
  
-> Read CLAUDE.md first and `docs/WIREFRAMES.md` (Screen 7). Build `src/screens/Debrief.jsx`: the headline from `outcome(state).label`; final meters with `statusLabel`; Science with its goal; the choices by Sol (from `state.history`); the storm size with the real record (class and date from `state.event`, badge text from `SPACE_WEATHER_LABEL`); `buildDebrief(state)` for "What went well", "What to improve" and the tip; "Arrives after the mission" if `state.pending` is not empty; two classroom questions; the honesty line ("Game numbers are simplified. The storm is based on a real record."); and buttons Play Again (starts a new random storm with the same nickname via `startMission(state.nickname)`), Sources and Restart (to the Callsign screen). If the mission failed show the calm failure message and no scary styling.
+> Read CLAUDE.md first and `docs/WIREFRAMES.md` (Screen 7). Build `src/screens/Debrief.jsx`: the headline from `outcome(state).label`; final meters with `statusLabel`; Science with its goal; the choices by Sol (from `state.history`); the storm size with the real record (class and date from `state.event`, badge text from `SPACE_WEATHER_LABEL`); `buildDebrief(state)` for "What went well", "What to improve" and the tip; "Arrives after the mission" if `state.pending` is not empty; two classroom questions; the honesty line ("Game numbers are simplified. The storm is based on a real record."); and buttons Play Again (`actions.playAgain()`), Sources and Restart (`actions.restart()`). If the mission failed show the calm failure message and no scary styling.
  
 **Output:** the Debrief matches the wireframe's example for the worked game (Complete — With Challenges, tip: Power 28).
  

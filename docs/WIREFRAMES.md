@@ -1,5 +1,7 @@
 # MARSBOUND — Wireframes (v2, matches CLAUDE.md)
 
+*Words for option titles, option text, intros and icons: `docs/KID_TEXT.md`. Storm size words: MILD (1), MEDIUM (2), SEVERE (3). On phones the meters still show the status word (for example "🫧 O 75 🟢 Healthy").*
+
 These are text wireframes for **8 screens** and 3 pop-ups (Confirm, Result, NASA drawer). They match the current rules: nickname screen, no power-emergency pop-up (Power 0 ends the mission), a Confirm preview that warns before a mission-ending choice, and honest NASA data labels.
 
 **Notes on reading them**
@@ -354,7 +356,7 @@ Arriving tomorrow: 🫧 +5  🧑‍🚀 +5 (the Greenhouse C harvest).
 │               [  CONTINUE  ]                   │
 └────────────────────────────────────────────────┘
 ```
-After **Continue**: `phase` not active → Debrief · else `solIsFinished` → dispatch `END_SOL` (the night), then Sol Summary (or Debrief if the night failed the mission or Sol 3 is over) · else back to the Dashboard.
+After **Continue**: `phase` not active → Debrief · else `solIsFinished` → dispatch `END_SOL` (the night), then Sol Summary (or Debrief if the night failed the mission; after Sol 3 the Sol Summary still shows, with a "See Mission Debrief" button) · else back to the Dashboard.
 
 ---
 
@@ -500,6 +502,8 @@ These numbers are the results of the worked example (Life Support C + Radiation 
 ## Text bank (Mission Control and fixed lines)
 
 `{commander}` = "Commander Nova", or just "Commander" if the player skipped.
+
+**Only ONE line shows at a time: the first row below that applies, from the top.** Priority: (1) Failure, (2) Power ≤ 20, (3) Radiation not done on Sol 2, (4) Crew Health < 40, (5) Oxygen < 40, (6) Power < 40, (7) Water < 40, (8) Life Support not done after Sol 1, (9) Start of Sol 1 and the default. Earth reply and Harvest lines appear in the Morning report card, not here.
 
 | When | Line |
 |---|---|

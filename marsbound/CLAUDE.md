@@ -24,7 +24,7 @@ It is our entry for the **NASA Space Apps Challenge "Build a Junior Astronaut Mi
 
 Two people, each with their own Claude Code session:
 - **Person A (logic and data):** `src/game/*`, `src/data/*`, `src/components/NasaDrawer.jsx`, `src/screens/Sources.jsx`, the reducer in `src/App.jsx`. Branch `logic`.
-- **Person B (screens and design):** `src/screens/*` (except Sources), `src/components/*` (except NasaDrawer), `src/styles/*`, `src/assets/*`. Branch `ui`.
+- **Person B (screens and design):** `src/screens/*` (except Sources), `src/components/*` (except NasaDrawer), `src/styles/*`, `src/assets/*`, and the Vite default styles `src/index.css` and `src/App.css` (B may empty or replace them). B may also add the single line `import './styles/theme.css'` to `src/main.jsx` and nothing else there. Branch `ui`.
 
 If a task would change the other person's files, **stop and tell me first**. Keep changes small. `main` must always run.
 
@@ -45,7 +45,8 @@ docs/
   WIREFRAMES.md                    layout of every screen and pop-up (follow this)
   MARSBOUND_Game_Overview.md       the game in simple words
   MARSBOUND_Team_Dev_Plan_v3.md    schedule and prompts
-  MARSBOUND_Complete_Game_Plan.md  use ONLY Part 7 (kid text); its wireframes and engine parts are old
+  KID_TEXT.md                      the only source of kid-facing text: option titles, option text, challenge intros, icons, classroom questions
+  MARSBOUND_Complete_Game_Plan.md  old plan; do NOT use it for wireframes, engine or text (use WIREFRAMES.md and KID_TEXT.md)
   NASA_DATA_VERIFIED.md            the only source of NASA facts
   spaceWeatherEvents.json          the 6 real flare records (master copy)
   PHASE3A_data_prompt.md           prompt that turns the NASA data into code
@@ -53,7 +54,7 @@ src/
   game/        game.js  challenges.js  debrief.js  storm.js  (Day 2: donki.js)
   data/        nasaContent.js  spaceWeatherEvents.json
   screens/     Title Callsign Intro Dashboard Challenge SolSummary Debrief Sources
-  components/  ResourceBar ChallengeCard OptionCard NasaDrawer ConfirmModal ResultModal StormForecast MissionControl
+  components/  ResourceBar ChallengeCard OptionCard NasaDrawer ConfirmModal ResultModal StormForecast MissionControl commander.js
   styles/      theme.css
   assets/      images + credits.txt
   App.jsx      reducer + current screen
@@ -182,10 +183,13 @@ More tests: Radiation A on Sol 1 → no storm damage; Radiation never done with 
 ### 5.10 App wiring (App.jsx ↔ screens)
 - `useReducer` actions: `START {severity, event, nickname}` · `CHOOSE {cid, opt}` · `END_SOL` · `START_SOL`. They call `newGame`, `choose`, `endSol`, `startNextSol`.
 - `useState` (not game state): `screen` = `'title'|'callsign'|'intro'|'dashboard'|'challenge'|'solSummary'|'debrief'|'sources'`, plus `selectedChallenge` (`'L'|'R'|'W'|'G'|'M'|null`) and `morningReport` (what arrived this morning, or null).
-- Every screen gets props `{ state, dispatch, go }`. `go(screenName, payload)` changes screen; `go('challenge','R')` opens a challenge.
-- `startMission(nickname)` in `App.jsx`: pick a record with `pickStorm(events)`, dispatch `START {severity: event.severity, event, nickname}`, `go('intro')`. The Callsign screen calls it (Skip passes `'Commander'`).
-- After a choice: Confirm → dispatch `CHOOSE` → Result → **Continue**: if `phase !== 'active'` → debrief; else if `solIsFinished` → dispatch `END_SOL`, then debrief if `phase` is `'failed'` or `'complete'`, else solSummary; else dashboard.
-- Sol Summary button: dispatch `START_SOL`, show the morning report, then debrief if `phase === 'failed'`, else dashboard. After Sol 3 the button reads "See Mission Debrief" and goes to debrief.
+- Every screen gets the props `{ state, dispatch, go, selectedChallenge, morningReport, actions }`. `go(screenName, payload)` changes screen; `go('challenge','R')` opens a challenge.
+- **`actions` is built in `App.jsx` (Person A) and passed to every screen. Screens never work out the next screen themselves.** The game functions are pure, so `App.jsx` computes the next state locally (`next = endSol(state)`) and also dispatches, because `dispatch` does not return the new state.
+  - `actions.startMission(nickname)`: pick a record with `pickStorm(events)` (from `src/data/spaceWeatherEvents.json`), dispatch `START {severity: event.severity, event, nickname}`, `go('intro')`. Callsign calls it (Skip passes `'Commander'`).
+  - `actions.continueAfterResult()` (Result pop-up → Continue): if `state.phase !== 'active'` → `go('debrief')`; else if `solIsFinished(state)` → `next = endSol(state)`, dispatch `END_SOL`, then `go('debrief')` if `next.phase === 'failed'`, otherwise `go('solSummary')` (this includes after Sol 3, so the player sees the last night); else `go('dashboard')`.
+  - `actions.startMorning()` (Sol Summary button): if `state.phase === 'complete'` → `go('debrief')` (the button reads "See Mission Debrief"); else `next = startNextSol(state)`, dispatch `START_SOL`, set `morningReport` to the new `harvest` / `earthReply` log entries (the entries in `next.log` that are not in `state.log`), then `go('debrief')` if `next.phase === 'failed'`, otherwise `go('dashboard')`.
+  - `actions.clearMorningReport()`: sets `morningReport` to null (the Dashboard shows the morning card until the player dismisses it).
+  - `actions.playAgain()`: `startMission(state.nickname)`. `actions.restart()`: `go('callsign')`.
 - Phase 0 placeholders (names and props must not change later): `NasaDrawer.jsx` (props `{challengeId, onClose}`), `Sources.jsx`, and `src/data/nasaContent.js` with `SPACE_WEATHER_LABEL = 'REAL NASA · saved copy of a DONKI record'`, `NASA_CONTENT = {}`, `RADIATION_BARS = []`.
 
 ---
@@ -204,17 +208,18 @@ Show **NOW → AFTER** per meter from `previewChoice`. If `includesNight`, title
 - Failed → a calm line naming the empty resource, e.g. "The crew ran out of power. Try again and plan sooner."
 
 ## 8. Screens (8 screens + 3 pop-ups)
-Title → **Callsign** → Intro → Dashboard ⇄ Challenge → Confirm → Result → Sol Summary → … → Debrief. **Sources** opens from Title and Debrief. Layouts and text: `docs/WIREFRAMES.md` (follow it). Kid text: Complete Game Plan Part 7.
+Title → **Callsign** → Intro → Dashboard ⇄ Challenge → Confirm → Result → Sol Summary → … → Debrief. **Sources** opens from Title and Debrief. Layouts and Mission Control lines: `docs/WIREFRAMES.md` (follow it). Option titles, option text, intros and icons: `docs/KID_TEXT.md`. If `challenges.js` differs from `KID_TEXT.md`, `KID_TEXT.md` wins for words and icons, and section 5.3 wins for numbers.
 
-**Look:** neumorphism (soft UI) on a dark navy base: raised cards and buttons, pressed (inset) meter tracks and text boxes, soft light/dark shadow pairs kept in CSS variables in `theme.css`, Mars-orange as the one accent, white text, large rounded corners. It must stay readable: strong text contrast, text ≥ 18px, buttons ≥ 48px tall with a visible pressed and focus state, and status shown as word + colour + icon (never shadows alone). Full rules: Visual rules in `docs/WIREFRAMES.md`. Phone: meters in 2 columns, challenge cards in 1 column. Dashboard challenge cards show warning chips: Life Support "costs 8 Oxygen each night if not done", Power Budget "costs 4 Power each night if not done", Radiation "storm at end of Sol 2".
+**Look:** neumorphism (soft UI) on a dark navy base: raised cards and buttons, pressed (inset) meter tracks and text boxes, soft light/dark shadow pairs kept in CSS variables in `theme.css`, Mars-orange as the one accent, white text, large rounded corners. It must stay readable: strong text contrast, text ≥ 18px, buttons ≥ 48px tall with a visible pressed and focus state, and status shown as word + colour + icon (never shadows alone). Full rules: Visual rules in `docs/WIREFRAMES.md`.
+**Status colours:** `statusLabel` returns a `word` and `icon`. Person B may style the colour in CSS from the `word` (for example a class per status) and may ignore the returned `color` if it is hard to read; every status colour must keep strong contrast on the navy background. Show the **word on phones too** (for example "🫧 O 75 🟢 Healthy"). **Storm size words:** severity 1 = MILD, 2 = MEDIUM, 3 = SEVERE. **Mission Control** shows only ONE line: the highest-priority line that applies (order in `docs/WIREFRAMES.md` text bank). Phone: meters in 2 columns, challenge cards in 1 column. Dashboard challenge cards show warning chips: Life Support "costs 8 Oxygen each night if not done", Power Budget "costs 4 Power each night if not done", Radiation "storm at end of Sol 2".
 **Kid language:** short sentences (about 12 words). Explain each science word once (Sol, radiation, millisievert, DONKI).
 
 ### 8.1 Callsign (nickname)
 - Ask "What should we call you, Commander?" with a text box, Continue and Skip. Optional chips: Nova, Comet, Orbit.
-- 2–16 characters after trimming and collapsing spaces. Invalid → friendly message ("Pick a name with 2 to 16 letters"), do not continue. Skip uses `'Commander'`.
+- 2–16 characters after trimming and collapsing spaces. Allowed: letters (any language), digits, single spaces, `-` and `_`; no emoji or other symbols. Invalid → friendly message ("Use 2 to 16 letters or numbers"), do not continue. Skip uses `'Commander'`.
 - Show "Use a nickname, not your real name." **Never ask for a real name, age, email or any personal data.**
 - Memory only: `state.nickname` via `START`. **No localStorage, cookies or server.** Render as plain text (never `dangerouslySetInnerHTML`). Play Again keeps it; Restart returns to Callsign.
-- **Display name:** write all text with `{commander}`, which is `"Commander " + nickname`, or just `"Commander"` when the nickname is `'Commander'` (never "Commander Commander"). Use it in Mission Control, Intro, Dashboard, Sol Summary and Debrief. `game.js` never reads the nickname.
+- **Display name:** put this helper in `src/components/commander.js` (Person B): `commanderName(state)`. Write all text with `{commander}`, which is `"Commander " + nickname`, or just `"Commander"` when the nickname is `'Commander'` (never "Commander Commander"). Use it in Mission Control, Intro, Dashboard, Sol Summary and Debrief. `game.js` never reads the nickname.
 
 ## 9. NASA data and images
 - Facts and flare records come **only** from `docs/NASA_DATA_VERIFIED.md` and `docs/spaceWeatherEvents.json`. `src/data/spaceWeatherEvents.json` is an array of `{ id, severity, date, classType, url }`; pick one per game with `pickStorm`.
@@ -223,7 +228,7 @@ Title → **Callsign** → Intro → Dashboard ⇄ Challenge → Confirm → Res
 - The storm is **based on** a real flare. It is **not** a reading from Mars. The Sources screen must also say: −10/−30/−55 Crew Health are game numbers, and NASA has not landed people on Mars.
 - The ISS radiation bar is Day 2 (NASA RadLab). Do not add a number for it.
 - Each NASA drawer ("How NASA handles this") shows: title, short text, lesson, source link, REAL/GAME badge, and a "game numbers are simplified" note.
-- **Mars photo:** Intro slide 1 may show one real NASA photo of Mars from `src/assets/` (a local file, never a hotlink), with the caption and credit I give you. Do not invent a rover name, date or credit. The caption must make clear it is a real photo of Mars, not our outpost. Credit lines go in `src/assets/credits.txt` and on the Sources screen. Never use the NASA logo.
+- **Mars photo:** Intro slide 1 may show one real NASA photo of Mars from `src/assets/` (a local file, never a hotlink), with the caption and credit I give you. Do not invent a rover name, date or credit. Until the real photo file exists, show the slide without it (no broken image). The caption must make clear it is a real photo of Mars, not our outpost. Credit lines go in `src/assets/credits.txt` and on the Sources screen. Never use the NASA logo.
 
 ## 10. Scope
 **Day 1:** theme → game logic + tests → real flare data → App reducer → Title, Callsign, Intro → Dashboard → Challenge → Confirm → Result + Sol Summary → Debrief → NASA drawers → Sources → deploy.
