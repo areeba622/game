@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function Callsign({ state, dispatch, go, startMission }) {
+export default function Callsign({ state, dispatch, go, actions }) {
   const [nickname, setNickname] = useState('');
 
   return (
@@ -11,7 +11,7 @@ export default function Callsign({ state, dispatch, go, startMission }) {
         value={nickname}
         onChange={(e) => setNickname(e.target.value)}
       />
-      <button onClick={() => startMission(nickname)}>Continue</button>
+      <button onClick={() => actions.startMission(nickname)}>Continue</button>
     </div>
   );
 }
