@@ -33,10 +33,10 @@ export default function Modal({ label, onClose, children }) {
   }
 
   return (
-    <div className="backdrop">
+    <div className="mb-backdrop">
       <div
         ref={dialogRef}
-        className="card modal"
+        className="mb-modal modal"
         role="dialog"
         aria-modal="true"
         aria-label={label}
