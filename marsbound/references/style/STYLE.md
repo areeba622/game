@@ -151,7 +151,7 @@ Texture reads as discrete speckle/fleck, not continuous grain or crosshatch. It 
 ## 8. Atmosphere
 Every light source gets a soft bloom halo (a ring of mid-value, mid-saturation color between the emitter and the dark field) rather than a hard cutoff. Distant/receding masses desaturate and shift toward `haze-dusty-sky` (aerial-perspective logic) rather than staying locally colored.
 
-**Exception to "no interpolated colours" (§11): scene-backdrop glow pools.** The CSS `SceneBackdrop` draws each glow pool as three hard-stop rings. Those rings are three fixed alpha steps (44 %, 24 %, 12 %) of one existing glow token (`glow-ember`, `glow-flare`, `glow-violet` or `glow-magenta`) over `panel-1-bg`, which is how the bloom falloff above is made without adding a new hex value. This is the only place a token is used at less than full alpha. UI chrome, icons and badges never do this. The backdrop's vignette uses `bevel-dark` at 36 % and 64 % the same way.
+**Exception to "no interpolated colours" (§11): scene-backdrop glow pools.** The CSS `SceneBackdrop` draws each glow pool as three hard-stop rings. Those rings are three fixed alpha steps (44 %, 24 %, 12 %) of one existing glow token (`glow-ember`, `glow-flare`, `glow-violet` or `glow-magenta`) over `panel-1-bg`, which is how the bloom falloff above is made without adding a new hex value. This is the only place a token is used at less than full alpha. UI chrome, icons and badges never do this. The backdrop's vignette uses `bevel-dark` at 28 % and 52 % the same way.
 
 ## 9. Contrast and saturation rules
 - Saturation and value rise together at focal points, fall together elsewhere — never a saturated-but-dark color or a bright-but-gray one used as a focal point.
