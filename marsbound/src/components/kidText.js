@@ -26,6 +26,15 @@ export const METERS = ['O', 'W', 'P', 'C'].map((key) => ({ key, ...METER_INFO[ke
 
 export const STORM_SIZE = { 1: 'MILD', 2: 'MEDIUM', 3: 'SEVERE' };
 
+// Night numbers shown in the Confirm pop-up note. They only MIRROR CLAUDE.md 5.4
+// (the real rules live in src/game/game.js). Never change them; ask first.
+export const NIGHT_NOTE = {
+  upkeep: '−8 O −3 W −3 P',
+  lifeSupportMissing: '−8 O',
+  powerBudgetMissing: '−4 P',
+  stormDamage: { 1: 10, 2: 30, 3: 55 },
+};
+
 export const HARVEST_LINE = 'Your crops grew! Fresh plants gave the crew food and air.';
 
 export const EARTH_REPLY_LINE = {

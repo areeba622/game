@@ -3,13 +3,15 @@ import { CHALLENGES } from '../game/challenges.js';
 import { statusLabel } from '../game/game.js';
 import OptionCard from '../components/OptionCard.jsx';
 import NasaDrawer from '../components/NasaDrawer.jsx';
+import ConfirmModal from '../components/ConfirmModal.jsx';
+import ResultModal from '../components/ResultModal.jsx';
 import { METERS, METER_INFO } from '../components/kidText.js';
 
 // Screen 5 — Challenge (docs/WIREFRAMES.md): situation, 3 options, NASA drawer.
 export default function Challenge({ state, dispatch, go, selectedChallenge, actions }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [chosen, setChosen] = useState(null); // option letter waiting for Confirm
-  const [step, setStep] = useState(null); // TEMP: null | 'confirm' | 'result' (Prompt 2B.2 replaces this)
+  const [step, setStep] = useState(null); // null | 'confirm' | 'result'
 
   const cid = selectedChallenge;
   const challenge = CHALLENGES[cid];
@@ -32,8 +34,7 @@ export default function Challenge({ state, dispatch, go, selectedChallenge, acti
     setStep('confirm');
   }
 
-  // TEMP until ConfirmModal / ResultModal (Prompt 2B.2).
-  function tempConfirm() {
+  function handleConfirm() {
     dispatch({ type: 'CHOOSE', cid, opt: chosen });
     setStep('result');
   }
@@ -112,34 +113,17 @@ export default function Challenge({ state, dispatch, go, selectedChallenge, acti
         </div>
       </section>
 
-      {/* TEMP stand-in for the Confirm and Result pop-ups (Prompt 2B.2 replaces this block). */}
-      {step && (
-        <div className="backdrop" role="dialog" aria-modal="true" aria-label="Confirm choice">
-          <div className="card temp-modal">
-            {step === 'confirm' ? (
-              <>
-                <p>
-                  YOU SELECTED: {chosen}. {challenge.options[chosen].title}
-                </p>
-                <div className="temp-modal__actions">
-                  <button type="button" className="btn-primary" onClick={tempConfirm}>
-                    Confirm
-                  </button>
-                  <button type="button" onClick={() => setStep(null)}>
-                    Change choice
-                  </button>
-                </div>
-              </>
-            ) : (
-              <>
-                <p>DECISION COMPLETE. You chose: {chosen}. {challenge.options[chosen].title}</p>
-                <button type="button" className="btn-primary" onClick={actions.continueAfterResult}>
-                  Continue
-                </button>
-              </>
-            )}
-          </div>
-        </div>
+      {step === 'confirm' && (
+        <ConfirmModal
+          state={state}
+          cid={cid}
+          opt={chosen}
+          onConfirm={handleConfirm}
+          onCancel={() => setStep(null)}
+        />
+      )}
+      {step === 'result' && (
+        <ResultModal state={state} cid={cid} opt={chosen} onContinue={actions.continueAfterResult} />
       )}
     </main>
   );
