@@ -42,3 +42,28 @@ export const EARTH_REPLY_LINE = {
   B: 'Mission Control: Your crew followed the right steps. Crew Health +5.',
   C: 'Mission Control: The problem got worse while you waited. Power −8, Crew Health −5.',
 };
+
+export const SCIENCE_GOAL = 15;
+
+export const ARRIVING_LABEL = { G: 'Greenhouse harvest', M: "Earth's reply" };
+
+// Classroom questions (docs/KID_TEXT.md). Two are shown on the Debrief.
+export const CLASSROOM_QUESTIONS = [
+  "Why can't astronauts wait for Earth to answer?",
+  'When is it smart to keep working in a storm? When is it not?',
+  'What did you give up to protect the crew?',
+  'Why does a greenhouse need a plan on Sol 1?',
+  'What would you do differently on a second try?',
+];
+
+// Pick 2 questions that fit what happened, then fill with general ones.
+export function pickClassroomQuestions(state) {
+  const did = (cid, sol) => state.history.some((h) => h.cid === cid && (sol === undefined || h.sol === sol));
+  const picks = [];
+  if (did('M', 3)) picks.push(0);
+  if (!state.sheltered || did('R', 3)) picks.push(1);
+  if (did('G', 3)) picks.push(3);
+  if (state.sheltered) picks.push(2);
+  picks.push(4, 2, 0);
+  return [...new Set(picks)].slice(0, 2).map((i) => CLASSROOM_QUESTIONS[i]);
+}

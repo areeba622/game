@@ -939,6 +939,100 @@ input[type='text']:focus-visible {
   align-self: flex-start;
 }
 
+/* ---------- Screens 6 and 7: Sol Summary and Debrief ---------- */
+
+.screen-sol-summary,
+.screen-debrief {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 760px;
+}
+
+.summary-header,
+.debrief-header {
+  text-align: center;
+}
+
+.summary-title,
+.debrief-title {
+  font-size: var(--font-xl);
+  letter-spacing: 0.08em;
+  margin: 0 0 6px;
+}
+
+.summary-sub,
+.debrief-name {
+  font-size: var(--font-lg);
+  margin: 0;
+}
+
+.summary-heading {
+  font-size: var(--font-base);
+  letter-spacing: 0.1em;
+  margin: 0 0 10px;
+}
+
+.summary-heading--outside { margin: 4px 0 -6px; }
+
+.summary-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.debrief-questions {
+  list-style: decimal;
+  padding-left: 1.4em;
+}
+
+.summary-list li.is-bad { color: var(--status-critical); font-weight: 700; }
+.summary-list li.is-good { color: var(--status-healthy); }
+
+.summary-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.summary-actions .btn-primary { flex: 1 1 200px; }
+
+.debrief-result {
+  font-size: var(--font-xl);
+  font-weight: 800;
+  margin: 14px 0 0;
+  color: var(--accent);
+}
+
+.debrief-header.is-successful .debrief-result { color: var(--status-healthy); }
+.debrief-header.is-atRisk .debrief-result { color: var(--status-low); }
+/* Failed: calm, not scary. Same neutral colour, no red. */
+.debrief-header.is-failed .debrief-result { color: var(--text); }
+
+.debrief-calm {
+  margin: 12px 0 0;
+  font-size: var(--font-lg);
+  color: var(--text-soft);
+}
+
+.debrief-sub {
+  font-size: var(--font-base);
+  letter-spacing: 0.06em;
+  margin: 12px 0 8px;
+}
+
+.debrief-tip { margin: 14px 0 0; }
+
+.debrief-honesty {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin: 0;
+}
+
 /* ---------- Pop-ups: Confirm and Result ---------- */
 
 .modal {

@@ -2,10 +2,10 @@ import { CHALLENGES } from '../game/challenges.js';
 import { previewChoice } from '../game/game.js';
 import Modal from './Modal.jsx';
 import EffectChips from './EffectChips.jsx';
-import { METER_INFO, NIGHT_NOTE } from './kidText.js';
+import { METER_INFO, NIGHT_NOTE, ARRIVING_LABEL } from './kidText.js';
 
 const ROWS = ['O', 'W', 'P', 'C', 'S'];
-const ARRIVING_LABEL = { G: 'Greenhouse harvest', M: "Earth's reply" };
+
 
 function nightNote(state, cid, opt) {
   const doneAfter = { ...state.done, [cid]: opt };

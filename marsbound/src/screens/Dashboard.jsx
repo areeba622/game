@@ -1,17 +1,16 @@
-import ResourceBar from '../components/ResourceBar.jsx';
+import MeterPanel from '../components/MeterPanel.jsx';
 import StormForecast from '../components/StormForecast.jsx';
 import ChallengeCard from '../components/ChallengeCard.jsx';
 import MissionControl from '../components/MissionControl.jsx';
 import MorningReport from '../components/MorningReport.jsx';
 import { commanderName } from '../components/commander.js';
-import { CHALLENGE_ORDER, CARD_TEXT, METERS } from '../components/kidText.js';
+import { CHALLENGE_ORDER, CARD_TEXT } from '../components/kidText.js';
 import { CHALLENGES } from '../game/challenges.js';
 
 // Screen 4 — Dashboard (docs/WIREFRAMES.md).
 // Jobs per Sol, mirrors CLAUDE.md 5.2. TODO: use an export from game.js if Person A adds one.
 const JOBS_PER_SOL = { 1: 2, 2: 2, 3: 1 };
 const JOBS_WORD = { 1: 'ONE CHALLENGE', 2: 'TWO CHALLENGES' };
-const SCIENCE_GOAL = 15;
 
 export default function Dashboard({ state, go, morningReport, actions }) {
   const quota = JOBS_PER_SOL[state.sol];
@@ -35,21 +34,7 @@ export default function Dashboard({ state, go, morningReport, actions }) {
 
       <MorningReport report={morningReport} state={state} onClose={actions.clearMorningReport} />
 
-      <section className="dash-meters" aria-label="Resources">
-        {METERS.map((m) => (
-          <ResourceBar key={m.key} label={m.label} icon={m.icon} value={state[m.key]} />
-        ))}
-        <div className={`science ${state.S >= SCIENCE_GOAL ? 'is-met' : ''}`}>
-          <span className="science__label">
-            <span aria-hidden="true">🔬</span> SCIENCE
-          </span>
-          <span className="science__value">{state.S}</span>
-          <span className="science__goal">
-            goal: {SCIENCE_GOAL}
-            {state.S >= SCIENCE_GOAL && ' ✓'}
-          </span>
-        </div>
-      </section>
+      <MeterPanel state={state} />
 
       <StormForecast state={state} />
 
