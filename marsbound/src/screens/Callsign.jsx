@@ -17,8 +17,7 @@ function isValidName(name) {
   return length >= 2 && length <= 16 && ALLOWED.test(name);
 }
 
-// TODO: switch to actions.startMission once Person A adds `actions` to App.jsx.
-export default function Callsign({ startMission }) {
+export default function Callsign({ actions }) {
   const [nickname, setNickname] = useState('');
   const [showError, setShowError] = useState(false);
 
@@ -29,7 +28,7 @@ export default function Callsign({ startMission }) {
       setShowError(true);
       return;
     }
-    startMission(name);
+    actions.startMission(name);
   }
 
   function handleChange(e) {
@@ -84,7 +83,7 @@ export default function Callsign({ startMission }) {
           <button type="submit" className="btn-primary">
             Continue
           </button>
-          <button type="button" onClick={() => startMission('Commander')}>
+          <button type="button" onClick={() => actions.startMission('Commander')}>
             Skip
           </button>
         </div>
