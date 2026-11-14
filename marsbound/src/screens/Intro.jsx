@@ -2,6 +2,13 @@ import { useState } from 'react';
 import { commanderName } from '../components/commander.js';
 import MarsPhoto from '../components/MarsPhoto.jsx';
 
+// Real NASA photo on slide 1. The credit comes from the image's NASA page
+// (also in src/assets/credits.txt and on the Sources screen). It is a real photo
+// of Mars, not of our outpost, and the caption says so.
+const PHOTO_ALT = 'Close-up of rocky Martian ground with pale, bright mineral patches.';
+const PHOTO_CAPTION =
+  'Close-up of a rock on Mars, taken by the Perseverance rover. Not our outpost. NASA/JPL-Caltech/LANL/CNES/IRAP';
+
 // Screen 3 — Intro (docs/WIREFRAMES.md). One slide at a time; Next / Skip.
 function buildSlides(commander) {
   return [
@@ -40,8 +47,7 @@ export default function Intro({ state, go }) {
         </div>
 
         <section className="intro-slide" aria-live="polite">
-          {/* TODO (Prompt 1B.3b): pass the exact alt and caption from the NASA page. */}
-          {slide.photo && <MarsPhoto />}
+          {slide.photo && <MarsPhoto alt={PHOTO_ALT} caption={PHOTO_CAPTION} />}
 
           <p className="intro-count">
             {index + 1} of {slides.length}

@@ -18,5 +18,13 @@ export function missionControlLine(state) {
   if (state.P < 40) return 'Power is low. Big jobs may drain the battery.';
   if (state.W < 40) return 'Water is low. Water shields and greenhouses use a lot.';
   if (state.sol > 1 && !state.done.L) return 'The oxygen system is still broken. It wastes extra air every Sol.';
+  // Defaults. Sol 1 is the text-bank line. The Sol 2 and Sol 3 lines are not in the
+  // text bank yet (TODO: add them to docs/WIREFRAMES.md) so the Sol 1 line is never shown late.
+  if (state.sol === 2) {
+    return state.sheltered
+      ? `The crew is sheltered, ${commander}. Pick two more jobs for today.`
+      : `${commander}, pick two more jobs. The storm comes tonight.`;
+  }
+  if (state.sol === 3) return `Last Sol, ${commander}! Pick the final job. The storm has passed.`;
   return `${commander}, pick two jobs for today. A storm is coming at the end of Sol 2.`;
 }

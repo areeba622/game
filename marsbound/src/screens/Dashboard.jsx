@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import Modal from '../components/Modal.jsx';
 import MeterPanel from '../components/MeterPanel.jsx';
 import StormForecast from '../components/StormForecast.jsx';
 import ChallengeCard from '../components/ChallengeCard.jsx';
@@ -13,6 +15,7 @@ const JOBS_PER_SOL = { 1: 2, 2: 2, 3: 1 };
 const JOBS_WORD = { 1: 'ONE CHALLENGE', 2: 'TWO CHALLENGES' };
 
 export default function Dashboard({ state, go, morningReport, actions }) {
+  const [askRestart, setAskRestart] = useState(false);
   const quota = JOBS_PER_SOL[state.sol];
   const commander = commanderName(state);
 
@@ -25,7 +28,7 @@ export default function Dashboard({ state, go, morningReport, actions }) {
           <span className="dash-header__jobs">
             Jobs today: {state.doneThisSol}/{quota}
           </span>
-          <button type="button" className="dash-header__restart" onClick={actions.restart}>
+          <button type="button" className="dash-header__restart" onClick={() => setAskRestart(true)}>
             Restart
           </button>
         </div>
@@ -63,6 +66,21 @@ export default function Dashboard({ state, go, morningReport, actions }) {
       </section>
 
       <MissionControl state={state} />
+
+      {askRestart && (
+        <Modal label="Start over?" onClose={() => setAskRestart(false)}>
+          <h2 className="modal__title">Start over?</h2>
+          <p>Your mission so far will be lost.</p>
+          <div className="modal__actions">
+            <button type="button" className="btn-primary" onClick={() => setAskRestart(false)}>
+              Keep playing
+            </button>
+            <button type="button" onClick={actions.restart}>
+              Yes, restart
+            </button>
+          </div>
+        </Modal>
+      )}
     </main>
   );
 }

@@ -14,7 +14,8 @@ function cleanName(raw) {
 
 function isValidName(name) {
   const length = [...name].length;
-  return length >= 2 && length <= 16 && ALLOWED.test(name);
+  // At least one letter or digit, so a name of only "-" or "_" is not accepted.
+  return length >= 2 && length <= 16 && ALLOWED.test(name) && /[\p{L}\p{Nd}]/u.test(name);
 }
 
 export default function Callsign({ actions }) {
