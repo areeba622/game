@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import Modal from '../components/Modal.jsx';
 import MeterPanel from '../components/MeterPanel.jsx';
 import StormForecast from '../components/StormForecast.jsx';
-import BaseMap from '../components/Basemap.jsx';
+import BaseMap from '../components/BaseMap.jsx';
 import MissionControl from '../components/MissionControl.jsx';
 import MorningReport from '../components/MorningReport.jsx';
 import { commanderName } from '../components/commander.js';
