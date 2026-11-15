@@ -1,7 +1,7 @@
 import { METER_INFO } from './kidText.js';
 
-// Chips for meter changes, e.g. { O: 20, W: -12 } → "🫧 +20  💧 −12".
-// Gains are green with +, costs are orange with −; each chip has its meter icon.
+// Chips for meter changes, e.g. { O: 20, W: -12 } → "+20 OXYGEN  −12 WATER".
+// Gains are green with +, costs are red with −. Words and signs carry the meaning, not colour alone.
 export default function EffectChips({ effects }) {
   if (!effects) return null;
 
@@ -12,9 +12,8 @@ export default function EffectChips({ effects }) {
         const info = METER_INFO[key];
         return (
           <span key={key} className={`effect-chip ${gain ? 'is-gain' : 'is-cost'}`}>
-            <span aria-hidden="true">{info.icon}</span>
-            <span className="sr-only">{info.label}</span> {gain ? '+' : '−'}
-            {Math.abs(amount)}
+            {gain ? '+' : '−'}
+            {Math.abs(amount)} {info.label.toUpperCase()}
           </span>
         );
       })}

@@ -1,0 +1,144 @@
+/* Dev-only layout for style-guide.html. Tokens only. Never imported by the game. */
+
+.sg {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-3) var(--space-2) var(--space-8);
+}
+
+.sg h1 {
+  margin: 0 0 var(--space-1);
+  font-size: var(--text-heading);
+  font-weight: 400;
+}
+
+.sg h2 {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-subhead);
+  font-weight: 700;
+}
+
+.sg h3 {
+  margin: 0 0 var(--space-1);
+  font-size: var(--text-emphasis);
+  font-weight: 400;
+  color: var(--color-text-secondary);
+}
+
+.sg p {
+  margin: 0 0 var(--space-1);
+}
+
+.sg-section {
+  margin-top: var(--space-6);
+}
+
+.sg-note {
+  color: var(--color-text-secondary);
+}
+
+.sg-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.sg-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--space-2);
+}
+
+.sg-grid--wide {
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.sg-swatch {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-panel-2-surface);
+  border: 2px solid;
+  border-color: var(--color-bevel-dark) var(--color-bevel-light) var(--color-bevel-light) var(--color-bevel-dark);
+}
+
+.sg-swatch__chip {
+  height: var(--space-6);
+}
+
+.sg-swatch__text {
+  padding: var(--space-1);
+  overflow-wrap: anywhere;
+}
+
+.sg-swatch__hex {
+  color: var(--color-text-secondary);
+}
+
+.sg-icon-cell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  background: var(--color-panel-2-surface);
+  border: 2px solid;
+  border-color: var(--color-bevel-dark) var(--color-bevel-light) var(--color-bevel-light) var(--color-bevel-dark);
+}
+
+.sg-icon-cell__sizes {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-1);
+}
+
+.sg-box {
+  position: relative;
+  min-height: 280px;
+  padding: var(--space-3);
+  overflow: hidden;
+  border: 2px solid;
+  border-color: var(--color-bevel-dark) var(--color-bevel-light) var(--color-bevel-light) var(--color-bevel-dark);
+}
+
+.sg-box h3 {
+  color: var(--color-text-primary);
+}
+
+.sg-cb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  background: var(--color-panel-2-surface);
+}
+
+.sg-cb--grey { filter: grayscale(1); }
+.sg-cb--protan { filter: url('#sg-protan'); }
+.sg-cb--deutan { filter: url('#sg-deutan'); }
+.sg-cb--tritan { filter: url('#sg-tritan'); }
+
+.sg {
+  --font-pixel-only: "VT323", monospace;
+}
+
+.sg-type-ui { font-family: var(--font-ui); }
+.sg-type-reading { font-family: var(--font-reading); line-height: var(--line-reading); }
+.sg-type-stat { font-family: var(--font-stat); font-size: var(--text-stat); line-height: var(--line-stat); letter-spacing: 0; }
+
+.sg-space {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-1);
+}
+
+.sg-space__bar {
+  height: var(--space-1);
+  background: var(--color-accent-signal);
+}
+
+/* Static renditions of interactive states (the real states need a pointer or the keyboard) */
+.mb-btn.sg-hover { background: var(--color-panel-3-raised); }
+.mb-btn--primary.sg-hover { background: var(--color-accent-signal); border-color: var(--color-bevel-light); }
+.sg-focus { outline: var(--focus-ring-width) solid var(--focus-ring-color); outline-offset: var(--focus-ring-offset); }

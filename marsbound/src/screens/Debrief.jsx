@@ -1,11 +1,13 @@
 import { outcome } from '../game/game.js';
+import '../styles/pixelscreens.css';
 import { buildDebrief } from '../game/debrief.js';
 import { CHALLENGES } from '../game/challenges.js';
-import { SPACE_WEATHER_LABEL } from '../data/nasaContent.js';
+import { useDonki, stormBadgeText } from '../components/useDonki.js';
 import MeterPanel from '../components/MeterPanel.jsx';
 import EffectChips from '../components/EffectChips.jsx';
 import { commanderName } from '../components/commander.js';
 import { ARRIVING_LABEL, STORM_SIZE, pickClassroomQuestions } from '../components/kidText.js';
+import Icon from '../components/Icon.jsx';
 
 // Screen 7 — Mission Debrief (docs/WIREFRAMES.md).
 export default function Debrief({ state, go, actions }) {
@@ -13,6 +15,7 @@ export default function Debrief({ state, go, actions }) {
   const failed = result.key === 'failed';
   const { good, better, tip } = buildDebrief(state);
   const event = state.event;
+  const donki = useDonki(event);
 
   const bySol = [1, 2, 3]
     .map((sol) => ({ sol, jobs: state.history.filter((h) => h.sol === sol) }))
@@ -25,7 +28,7 @@ export default function Debrief({ state, go, actions }) {
       <header className={`card debrief-header is-${result.key}`}>
         <h1 className="debrief-title">MISSION DEBRIEF</h1>
         <p className="debrief-name">{commanderName(state)}</p>
-        <p className="debrief-result">{failed ? result.label.toUpperCase() : `★ ${result.label.toUpperCase()} ★`}</p>
+        <p className="debrief-result">{failed ? result.label.toUpperCase() : (<><Icon name="star" scale={1} /> {result.label.toUpperCase()} <Icon name="star" scale={1} /></>)}</p>
         {failed && (
           <p className="debrief-calm">
             {tip}
@@ -50,7 +53,7 @@ export default function Debrief({ state, go, actions }) {
           {event && (
             <li>
               <strong>Storm:</strong> {STORM_SIZE[state.severity]} ·{' '}
-              <span className="badge badge-real">🟦 {SPACE_WEATHER_LABEL}</span> {event.classType} flare, {event.date}
+              <span className="badge badge-real"><Icon name="globe" scale={1} /> {stormBadgeText(donki.origin)}</span> {event.classType} flare, {event.date}
             </li>
           )}
         </ul>
@@ -65,7 +68,7 @@ export default function Debrief({ state, go, actions }) {
               <ul className="summary-list">
                 {good.map((line) => (
                   <li key={line} className="is-good">
-                    <span aria-hidden="true">✓</span> {line}
+                    <Icon name="check" scale={1} /> {line}
                   </li>
                 ))}
               </ul>
@@ -94,7 +97,7 @@ export default function Debrief({ state, go, actions }) {
       {arrivesAfter.length > 0 && (
         <section className="card" aria-labelledby="deb-after">
           <h2 id="deb-after" className="summary-heading">
-            <span aria-hidden="true">🛰</span> ARRIVES AFTER THE MISSION
+            <Icon name="satellite" scale={1} /> ARRIVES AFTER THE MISSION
           </h2>
           <ul className="summary-list">
             {arrivesAfter.map((p, i) => (
@@ -116,8 +119,8 @@ export default function Debrief({ state, go, actions }) {
       </section>
 
       <p className="debrief-honesty">
-        <span className="badge badge-game">🟧 GAME NUMBERS</span> Game numbers are simplified.{' '}
-        <span className="badge badge-real">🟦 REAL NASA</span> The storm is based on a real record.
+        <span className="badge badge-game"><Icon name="die" scale={1} /> GAME NUMBERS</span> Game numbers are simplified.{' '}
+        <span className="badge badge-real"><Icon name="globe" scale={1} /> REAL NASA</span> The storm is based on a real record.
       </p>
 
       <div className="summary-actions">

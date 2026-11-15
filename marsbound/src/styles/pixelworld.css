@@ -1,0 +1,869 @@
+/* ---------- Pixel world screens: Dashboard and Challenge ----------
+   Matches the approved reference screenshots (blood-moon palette, stair-step corners,
+   hard 1-step shadows, stepped animation). Everything is scoped to .pxw so the other
+   screens keep their own look. No border-radius, no blur, no gradients except hard-stop
+   scanlines. Fonts come from theme.css (--font-ui). */
+
+.pxw {
+  --px-k: #000000;
+  --px-dark: #0d0603;
+  --px-brown: #3c2414;
+  --px-rust: #6b3524;
+  --px-sand: #fbab79;
+  --px-peach: #f49874;
+  --px-orange: #cd6031;
+  --px-bone: #fff0e0;
+  --px-green: #7bbf4a;
+  --px-yellow: #ffd23f;
+  --px-red: #c4303f;
+  --px-red-text: #ff8a94;
+  --px-stair: polygon(0 12px, 4px 12px, 4px 8px, 8px 8px, 8px 4px, 12px 4px, 12px 0, calc(100% - 12px) 0, calc(100% - 12px) 4px, calc(100% - 8px) 4px, calc(100% - 8px) 8px, calc(100% - 4px) 8px, calc(100% - 4px) 12px, 100% 12px, 100% calc(100% - 12px), calc(100% - 4px) calc(100% - 12px), calc(100% - 4px) calc(100% - 8px), calc(100% - 8px) calc(100% - 8px), calc(100% - 8px) calc(100% - 4px), calc(100% - 12px) calc(100% - 4px), calc(100% - 12px) 100%, 12px 100%, 12px calc(100% - 4px), 8px calc(100% - 4px), 8px calc(100% - 8px), 4px calc(100% - 8px), 4px calc(100% - 12px), 0 calc(100% - 12px));
+
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: var(--px-k);
+  color: var(--px-bone);
+  font-family: var(--font-ui);
+  font-size: 18px;
+  line-height: 1.25;
+  font-variant-ligatures: none;
+}
+
+.pxw *,
+.pxw *::before,
+.pxw *::after {
+  box-sizing: border-box;
+}
+
+:where(.pxw) :is(p, h1, h2, h3, ul) {
+  margin: 0;
+  padding: 0;
+}
+
+:where(.pxw) ul {
+  list-style: none;
+}
+
+.pxw-canvas {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 0;
+  display: block;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.pxw-icon {
+  display: inline-block;
+  flex: none;
+  vertical-align: middle;
+  image-rendering: pixelated;
+}
+
+/* ---------- pixel panel: sand edge, dark fill, stair corners, hard shadow ---------- */
+
+.pxw-panel {
+  position: relative;
+  filter: drop-shadow(0 5px 0 #000);
+}
+
+.pxw-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--px-sand);
+  clip-path: var(--px-stair);
+}
+
+.pxw-panel > .pxw-in {
+  position: relative;
+  margin: 4px;
+  padding: 8px 20px;
+  background: var(--px-brown);
+  clip-path: var(--px-stair);
+}
+
+/* ---------- pixel buttons (they replace the global button look inside .pxw) ---------- */
+
+.pxw .pxw-btn,
+.pxw-morning .pxw-btn {
+  all: unset;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 22px;
+  font-family: var(--font-ui);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.1;
+  text-align: center;
+  color: var(--px-bone);
+  background: var(--px-rust);
+  clip-path: var(--px-stair);
+  cursor: pointer;
+}
+
+.pxw .pxw-btn:hover,
+.pxw-morning .pxw-btn:hover {
+  background: var(--px-orange);
+  color: var(--px-k);
+}
+
+.pxw .pxw-btn:active,
+.pxw-morning .pxw-btn:active {
+  transform: translateY(3px);
+}
+
+.pxw .pxw-btn:focus-visible,
+.pxw-morning .pxw-btn:focus-visible {
+  background: var(--px-yellow);
+  color: var(--px-k);
+  outline: none;
+}
+
+.pxw .pxw-btn--go,
+.pxw-morning .pxw-btn--go {
+  color: var(--px-k);
+  background: var(--px-orange);
+}
+
+.pxw .pxw-btn--go:hover,
+.pxw-morning .pxw-btn--go:hover {
+  background: var(--px-sand);
+}
+
+.pxw .pxw-btn--small,
+.pxw-morning .pxw-btn--small {
+  padding: 0 18px;
+}
+
+/* ---------- HUD ---------- */
+
+.pxw-hud {
+  position: relative;
+  z-index: 3;
+  flex: none;
+  width: min(1180px, 96vw);
+  margin: 12px auto 0;
+}
+
+.pxw-hud > .pxw-in {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 22px;
+}
+
+.pxw-hud__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 20px;
+}
+
+.pxw-restart {
+  margin-left: auto;
+}
+
+.pxw-sol {
+  font-size: 26px;
+  color: var(--px-peach);
+  white-space: nowrap;
+}
+
+.pxw-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--px-bone);
+}
+
+.pxw-quota {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+.pxw-pips {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.pxw-pip {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background: var(--px-k);
+  box-shadow: 0 0 0 2px var(--px-rust);
+}
+
+.pxw-pip.is-on {
+  background: var(--px-green);
+}
+
+.pxw-commander {
+  color: var(--px-peach);
+}
+
+/* meters */
+.pxw-meters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 6px 16px;
+}
+
+.pxw-meter {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.pxw-meter__name {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--px-peach);
+}
+
+.pxw-meter__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pxw-meter__value {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.05;
+  color: var(--px-bone);
+  font-variant-numeric: tabular-nums;
+}
+
+.pxw-meter__goal {
+  font-size: 18px;
+  color: var(--px-peach);
+}
+
+.pxw-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 700;
+}
+
+.pxw-status.is-ok { color: var(--px-green); }
+.pxw-status.is-low { color: var(--px-yellow); }
+.pxw-status.is-danger { color: var(--px-red-text); animation: pxw-blink 0.66s steps(2) infinite; }
+
+/* storm forecast */
+.pxw-storm {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 18px;
+  padding-top: 6px;
+  border-top: 2px solid var(--px-rust);
+}
+
+.pxw-storm__title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--px-peach);
+}
+
+.pxw-storm__text {
+  flex: 1 1 360px;
+}
+
+.pxw-storm__size {
+  color: var(--px-yellow);
+}
+
+.pxw-storm__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pxw-storm__status.is-warn { color: var(--px-yellow); }
+.pxw-storm__status.is-safe { color: var(--px-green); }
+.pxw-storm__status.is-hit { color: var(--px-red-text); }
+
+.pxw-storm__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 18px;
+  color: var(--px-k);
+  background: var(--px-sand);
+  clip-path: var(--px-stair);
+}
+
+/* ---------- Dashboard rooms (buttons over the canvas) ---------- */
+
+.pxw-rooms {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.pxw .pxw-room {
+  all: unset;
+  position: absolute;
+  box-sizing: border-box;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.pxw .pxw-room:focus-visible {
+  outline: 4px solid var(--px-yellow);
+  outline-offset: 6px;
+}
+
+.pxw-label {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 8px);
+  width: max-content;
+  max-width: calc(100% + 20px);
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+.pxw-label::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--px-sand);
+  clip-path: var(--px-stair);
+}
+
+.pxw-label__in {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 3px;
+  padding: 3px 14px;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--px-sand);
+  background: var(--px-k);
+  clip-path: var(--px-stair);
+}
+
+.pxw .pxw-room:hover .pxw-label::before,
+.pxw .pxw-room:focus-visible .pxw-label::before {
+  background: var(--px-orange);
+}
+
+.pxw .pxw-room.is-done .pxw-label::before {
+  background: var(--px-green);
+}
+
+.pxw .pxw-room.is-done .pxw-label__in {
+  color: var(--px-green);
+}
+
+/* ---------- Bottom block: warnings + Mission Control ---------- */
+
+.pxw-foot {
+  position: relative;
+  z-index: 3;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: min(1180px, 96vw);
+  margin: auto auto 14px;
+}
+
+/* the station / scene is drawn on the canvas; this spacer keeps the content out of its way */
+.pxw-stage {
+  display: block;
+  flex: none;
+}
+
+/* Challenge page body, under the scene */
+.pxw-body {
+  position: relative;
+  z-index: 3;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: min(1100px, 96vw);
+  margin: 0 auto 28px;
+}
+
+.pxw-section {
+  align-self: flex-start;
+  padding: 4px 20px;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--px-sand);
+  background: var(--px-k);
+  clip-path: var(--px-stair);
+}
+
+.pxw-now__title {
+  margin-bottom: 4px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--px-peach);
+}
+
+.pxw-nasa {
+  align-self: flex-start;
+}
+
+.pxw-warns {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.pxw-warn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 22px;
+  color: var(--px-yellow);
+  background: var(--px-k);
+  clip-path: var(--px-stair);
+}
+
+.pxw-warn b {
+  color: var(--px-bone);
+}
+
+.pxw-mcp {
+  max-width: 100%;
+}
+
+.pxw-mcp > .pxw-in {
+  padding: 6px 24px;
+  font-size: 20px;
+}
+
+.pxw-mcp em {
+  margin-right: 10px;
+  font-style: normal;
+  font-weight: 700;
+  color: var(--px-peach);
+}
+
+/* Morning report: a pop-up over a dimmed page */
+.pxw-morning {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 50%;
+  z-index: 20;
+  width: min(640px, 92vw);
+  margin: 0 auto;
+  transform: translateY(-50%);
+  box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.72);
+}
+
+.pxw-morning > .pxw-in {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 24px 18px;
+}
+
+.pxw-morning h2 {
+  font-size: 22px;
+  color: var(--px-peach);
+}
+
+.pxw-morning li {
+  margin-bottom: 6px;
+}
+
+/* ---------- Challenge scene ---------- */
+
+.pxw-hud--slim > .pxw-in {
+  padding: 8px 18px;
+}
+
+.pxw-alert {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--px-red);
+  clip-path: var(--px-stair);
+}
+
+.pxw-dialogue > .pxw-in {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  min-height: 96px;
+  padding: 12px 24px;
+  background-color: #120a06;
+  background-image: repeating-linear-gradient(0deg, rgba(251, 171, 121, 0.07) 0 2px, transparent 2px 4px);
+}
+
+.pxw-who {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  color: var(--px-peach);
+}
+
+.pxw-portrait {
+  display: block;
+  width: 64px;
+  height: 64px;
+  image-rendering: pixelated;
+  background: var(--px-k);
+}
+
+.pxw-line {
+  font-size: 24px;
+  line-height: 1.35;
+  color: var(--px-bone);
+}
+
+.pxw-line.is-typing > span[aria-hidden]::after {
+  content: '_';
+  animation: pxw-blink 0.5s steps(2) infinite;
+}
+
+.pxw-opts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.pxw-opt {
+  display: flex;
+}
+
+.pxw-opt > .pxw-in {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 16px 14px 62px;
+}
+
+.pxw-opt__letter {
+  position: absolute;
+  left: 14px;
+  top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--px-k);
+  background: var(--px-orange);
+  clip-path: var(--px-stair);
+}
+
+.pxw-opt__title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--px-bone);
+}
+
+.pxw-opt__text {
+  color: var(--px-peach);
+}
+
+.pxw-opt__chips,
+.pxw-opt__later {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.pxw-opt__later-label {
+  font-weight: 700;
+  color: var(--px-peach);
+}
+
+.pxw-opt__choose {
+  margin-top: auto;
+  align-self: flex-start;
+}
+
+.pxw-tagline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+}
+
+.pxw-tagline.is-safe { color: var(--px-green); }
+.pxw-tagline.is-warn { color: var(--px-yellow); }
+
+.pxw .effect-chips {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.pxw .effect-chip {
+  display: inline-block;
+  padding: 0 16px;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.5;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  clip-path: var(--px-stair);
+}
+
+.pxw .effect-chip.is-gain {
+  color: var(--px-k);
+  background: var(--px-green);
+}
+
+.pxw .effect-chip.is-cost {
+  color: #fff;
+  background: var(--px-red);
+}
+
+/* NASA drawer (Person A's component): only its position and skin are adapted here */
+.pxw .nasa-drawer {
+  position: fixed;
+  inset: auto;
+  left: 0;
+  right: 0;
+  top: 50%;
+  width: min(560px, 92vw);
+  height: auto;
+  max-height: 80vh;
+  margin: 0 auto;
+  transform: translateY(-50%);
+  color: var(--px-bone);
+  background: var(--px-brown);
+  border: 4px solid var(--px-sand);
+  border-radius: 0;
+  box-shadow: 6px 6px 0 #000;
+  font-family: var(--font-ui);
+}
+
+.pxw .nasa-drawer-backdrop {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.pxw .nasa-drawer-close {
+  border-radius: 0;
+}
+
+.pxw .nasa-drawer a {
+  color: var(--px-yellow);
+}
+
+/* ---------- pop-ups (Confirm, Result, Start over?) ---------- */
+
+.pxw .mb-backdrop {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.pxw .mb-modal {
+  max-width: 560px;
+  color: var(--px-bone);
+  background: var(--px-brown);
+  border: 4px solid var(--px-sand);
+  border-radius: 0;
+  box-shadow: 6px 6px 0 #000;
+  font-family: var(--font-ui);
+}
+
+.pxw .mb-modal h2,
+.pxw .mb-modal h3 {
+  color: var(--px-bone);
+}
+
+.pxw .mb-modal .modal__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.pxw .mb-modal .preview-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.pxw .mb-modal .preview-table th,
+.pxw .mb-modal .preview-table td {
+  padding: 4px 8px;
+  text-align: left;
+  border-bottom: 2px solid var(--px-rust);
+}
+
+.pxw .mb-modal .warning-danger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  margin: 12px 0;
+  font-weight: 700;
+  color: #fff;
+  background: var(--px-red);
+  border: 0;
+  border-radius: 0;
+}
+
+.pxw .mb-modal .badge,
+.pxw .pxw-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 10px;
+  color: var(--px-k);
+  background: var(--px-sand);
+  border-radius: 0;
+}
+
+/* ---------- animation ---------- */
+
+@keyframes pxw-blink {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+/* ---------- narrow screens ---------- */
+
+@media (max-width: 699px) {
+  .pxw-dash .pxw-commander {
+    display: none;
+  }
+
+
+
+  .pxw-hud > .pxw-in {
+    gap: 6px;
+    padding: 6px 12px;
+  }
+
+  .pxw-hud__top {
+    justify-content: center;
+    gap: 6px 12px;
+  }
+
+  .pxw-restart {
+    margin-left: 0;
+  }
+
+  .pxw-meters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px 10px;
+  }
+
+  .pxw-meter__value {
+    font-size: 24px;
+  }
+
+  .pxw-storm {
+    gap: 2px 10px;
+  }
+
+  .pxw-mcp > .pxw-in {
+    padding: 4px 14px;
+    font-size: 18px;
+  }
+
+  .pxw-mcp em {
+    display: none;
+  }
+
+  .pxw-label__in {
+    padding: 2px 8px;
+  }
+
+  .pxw-opts {
+    grid-template-columns: 1fr;
+  }
+
+  .pxw-line {
+    font-size: 20px;
+  }
+
+  .pxw-dialogue > .pxw-in {
+    flex-direction: column;
+    padding: 10px 16px;
+  }
+
+  }
+
+/* Morning report is also used on the Dashboard, outside .pxw: give it the same resets. */
+.pxw-morning {
+  box-sizing: border-box;
+  font-family: var(--font-ui);
+  font-size: 20px;
+  line-height: 1.4;
+  color: var(--px-bone);
+}
+.pxw-morning *,
+.pxw-morning *::before,
+.pxw-morning *::after {
+  box-sizing: border-box;
+}
+.pxw-morning :is(p, h2, ul) {
+  margin: 0;
+  padding: 0;
+}
+.pxw-morning ul {
+  list-style: none;
+}
+.pxw-morning li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Same colour tokens for the Morning report, which renders outside .pxw on the Dashboard. */
+.pxw-morning {
+  --px-k: #000000;
+  --px-dark: #0d0603;
+  --px-brown: #3c2414;
+  --px-rust: #6b3524;
+  --px-sand: #fbab79;
+  --px-peach: #f49874;
+  --px-orange: #cd6031;
+  --px-bone: #fff0e0;
+  --px-green: #7bbf4a;
+  --px-yellow: #ffd23f;
+  --px-red: #c4303f;
+  --px-red-text: #ff8a94;
+  --px-stair: polygon(0 12px, 4px 12px, 4px 8px, 8px 8px, 8px 4px, 12px 4px, 12px 0, calc(100% - 12px) 0, calc(100% - 12px) 4px, calc(100% - 8px) 4px, calc(100% - 8px) 8px, calc(100% - 4px) 8px, calc(100% - 4px) 12px, 100% 12px, 100% calc(100% - 12px), calc(100% - 4px) calc(100% - 12px), calc(100% - 4px) calc(100% - 8px), calc(100% - 8px) calc(100% - 8px), calc(100% - 8px) calc(100% - 4px), calc(100% - 12px) calc(100% - 4px), calc(100% - 12px) 100%, 12px 100%, 12px calc(100% - 4px), 8px calc(100% - 4px), 8px calc(100% - 8px), 4px calc(100% - 8px), 4px calc(100% - 12px), 0 calc(100% - 12px));
+}

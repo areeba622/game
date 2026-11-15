@@ -1,0 +1,361 @@
+/* ---------- Pixel skin for the story screens ----------
+   Title, Callsign, Intro, Sol Summary, Debrief and Sources. They share one look with the
+   Dashboard and Challenge screens: blood-moon palette, square pixel panels with a sand edge
+   and a hard shadow, orange action buttons, no rounded corners, no soft shadows.
+   Scoped to .screen (their root) and .mb-title, so it cannot touch the pixel-world screens. */
+
+:root {
+  --ps-k: #000000;
+  --ps-dark: #0d0603;
+  --ps-brown: #3c2414;
+  --ps-rust: #6b3524;
+  --ps-sand: #fbab79;
+  --ps-peach: #f49874;
+  --ps-orange: #cd6031;
+  --ps-bone: #fff0e0;
+  --ps-green: #7bbf4a;
+  --ps-yellow: #ffd23f;
+  --ps-red: #c4303f;
+  --ps-stair: polygon(0 12px, 4px 12px, 4px 8px, 8px 8px, 8px 4px, 12px 4px, 12px 0, calc(100% - 12px) 0, calc(100% - 12px) 4px, calc(100% - 8px) 4px, calc(100% - 8px) 8px, calc(100% - 4px) 8px, calc(100% - 4px) 12px, 100% 12px, 100% calc(100% - 12px), calc(100% - 4px) calc(100% - 12px), calc(100% - 4px) calc(100% - 8px), calc(100% - 8px) calc(100% - 8px), calc(100% - 8px) calc(100% - 4px), calc(100% - 12px) calc(100% - 4px), calc(100% - 12px) 100%, 12px 100%, 12px calc(100% - 4px), 8px calc(100% - 4px), 8px calc(100% - 8px), 4px calc(100% - 8px), 4px calc(100% - 12px), 0 calc(100% - 12px));
+}
+
+/* ----- page background: a night sky over a stepped Mars horizon ----- */
+
+.screen,
+.mb-title {
+  position: relative;
+  isolation: isolate;
+  color: var(--ps-bone);
+}
+
+.screen::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(2px 2px at 12% 14%, #fff, transparent),
+    radial-gradient(2px 2px at 34% 8%, #fff, transparent),
+    radial-gradient(2px 2px at 58% 18%, #fff, transparent),
+    radial-gradient(2px 2px at 81% 10%, #fff, transparent),
+    radial-gradient(2px 2px at 93% 24%, #fff, transparent),
+    linear-gradient(#000 0 62%, #1e100a 62% 70%, #3c2414 70% 82%, #6b3524 82% 94%, #cd6031 94% 100%);
+}
+
+.mb-scene--title {
+  background: linear-gradient(#000 0 52%, #1e100a 52% 60%, #3c2414 60% 72%, #6b3524 72% 84%, #cd6031 84% 100%);
+}
+
+.mb-scene--title::before,
+.mb-scene--title::after {
+  display: none;
+}
+
+/* ----- panels ----- */
+
+.screen .card,
+.screen .sources-section {
+  padding: 18px 24px;
+  color: var(--ps-bone);
+  background: var(--ps-brown);
+  border: 4px solid var(--ps-sand);
+  border-radius: 0;
+  box-shadow: 0 5px 0 var(--ps-k), inset 0 0 0 2px var(--ps-rust);
+}
+
+.screen h1,
+.screen h2,
+.screen h3 {
+  color: var(--ps-bone);
+  letter-spacing: 0.02em;
+}
+
+.screen .summary-title,
+.screen .debrief-title,
+.screen .callsign-question,
+.screen .sources-header h1 {
+  font-size: 32px;
+  color: var(--ps-sand);
+}
+
+.screen .summary-heading,
+.screen .card h2,
+.screen .sources-section h2 {
+  font-size: 22px;
+  color: var(--ps-peach);
+  text-transform: none;
+  letter-spacing: 0.02em;
+}
+
+.screen .summary-heading--outside {
+  display: inline-block;
+  padding: 2px 18px;
+  color: var(--ps-sand);
+  background: var(--ps-k);
+}
+
+.screen .summary-sub,
+.screen .debrief-sub,
+.screen .debrief-name {
+  color: var(--ps-peach);
+}
+
+.screen .debrief-result {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 22px;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--ps-k);
+  background: var(--ps-sand);
+}
+
+.screen .summary-list,
+.screen .sources-section ul {
+  padding-left: 0;
+  list-style: none;
+}
+
+.screen .summary-list li,
+.screen .sources-section li {
+  margin-bottom: 8px;
+}
+
+.screen a {
+  color: var(--ps-yellow);
+  text-underline-offset: 4px;
+}
+
+.screen a:focus-visible,
+.screen button:focus-visible,
+.screen input:focus-visible {
+  outline: 4px solid var(--ps-yellow);
+  outline-offset: 3px;
+}
+
+.screen .debrief-tip,
+.screen .debrief-calm,
+.screen .debrief-honesty {
+  color: var(--ps-bone);
+}
+
+.screen .is-good {
+  color: var(--ps-green);
+}
+
+/* ----- badges ----- */
+
+.screen .badge,
+.screen .mars-photo__caption .badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ps-k);
+  background: var(--ps-sand);
+  border: 0;
+  border-radius: 0;
+}
+
+.screen .badge-game {
+  background: var(--ps-yellow);
+}
+
+/* ----- buttons (Back, Skip, Start Sol, Play again, chips) ----- */
+
+.screen button,
+.mb-title .mb-btn {
+  all: unset;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 24px;
+  font-family: var(--font-ui);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.1;
+  text-align: center;
+  color: var(--ps-bone);
+  background: var(--ps-rust);
+  clip-path: var(--ps-stair);
+  cursor: pointer;
+}
+
+.screen button:hover,
+.mb-title .mb-btn:hover {
+  color: var(--ps-k);
+  background: var(--ps-orange);
+}
+
+.screen button:active,
+.mb-title .mb-btn:active {
+  transform: translateY(3px);
+}
+
+.screen button:focus-visible,
+.mb-title .mb-btn:focus-visible {
+  color: var(--ps-k);
+  background: var(--ps-yellow);
+  outline: none;
+}
+
+.screen .btn-primary,
+.mb-title .mb-btn--primary {
+  color: var(--ps-k);
+  background: var(--ps-orange);
+  border: 0;
+}
+
+.screen .btn-primary:hover,
+.mb-title .mb-btn--primary:hover {
+  background: var(--ps-sand);
+}
+
+.screen .chip[aria-pressed='true'] {
+  color: var(--ps-k);
+  background: var(--ps-yellow);
+}
+
+/* ----- Title ----- */
+
+.mb-title__name {
+  color: var(--ps-sand);
+  text-shadow: 4px 4px 0 var(--ps-k);
+}
+
+.mb-title__sub {
+  color: var(--ps-yellow);
+}
+
+.mb-title__tagline,
+.mb-title__footer {
+  color: var(--ps-bone);
+}
+
+.mb-title__footer {
+  padding: 2px 16px;
+  background: var(--ps-k);
+}
+
+/* ----- Callsign ----- */
+
+.screen .callsign-card {
+  width: min(560px, 94vw);
+}
+
+.screen input[type='text'] {
+  all: unset;
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  min-height: 52px;
+  padding: 0 16px;
+  font-family: var(--font-ui);
+  font-size: 20px;
+  color: var(--ps-bone);
+  background: var(--ps-dark);
+  border: 4px solid var(--ps-rust);
+}
+
+.screen input[type='text']::placeholder {
+  color: var(--ps-peach);
+}
+
+.screen .callsign-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--ps-red);
+}
+
+.screen .callsign-hint,
+.screen .callsign-try {
+  color: var(--ps-peach);
+}
+
+/* ----- Intro ----- */
+
+.screen .intro-dots > * {
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.screen .mars-photo img {
+  border: 4px solid var(--ps-sand);
+  border-radius: 0;
+  box-shadow: 0 5px 0 var(--ps-k);
+}
+
+.screen .mars-photo__caption {
+  color: var(--ps-bone);
+}
+
+/* ----- meters inside the Sol Summary and Debrief ----- */
+
+.screen .mb-meter-box {
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.screen .mb-meter,
+.screen .science {
+  color: var(--ps-bone);
+  background: var(--ps-dark);
+  border: 2px solid var(--ps-rust);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.screen .mb-meter__label--water {
+  color: #95aae4;
+}
+
+.screen .science__value {
+  color: var(--ps-yellow);
+}
+
+.screen .mb-meter-box .mb-status__word {
+  border-radius: 0;
+}
+
+.screen .mb-meter__track {
+  border-radius: 0;
+}
+
+/* ----- Sources ----- */
+
+.screen-sources {
+  max-width: 880px;
+}
+
+.screen .sources-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.screen .sources-header h1 {
+  margin: 0;
+}
+
+/* long text keeps a comfortable line length */
+.screen .sources-section li,
+.screen .card p {
+  max-width: 72ch;
+}
+
+@media (max-width: 559px) {
+  .screen .card,
+  .screen .sources-section {
+    padding: 14px 16px;
+  }
+}

@@ -1,6 +1,7 @@
 import { CHALLENGES } from '../game/challenges.js';
 import Modal from './Modal.jsx';
 import EffectChips from './EffectChips.jsx';
+import Icon from './Icon.jsx';
 
 // Result pop-up: what changed, a short "what happened" line, and the real-NASA
 // lines from docs/WIREFRAMES.md where they apply. Continue calls onContinue
@@ -27,13 +28,13 @@ export default function ResultModal({ state, cid, opt, onContinue }) {
 
       {cid === 'R' && event && (
         <p className="modal__nasa">
-          <span aria-hidden="true">🌩</span> “This storm is based on a real NASA record: an {event.classType} flare on{' '}
-          {event.date}.” <span className="badge badge-real">🟦 REAL NASA</span>
+          <Icon name="storm" scale={1} /> “This storm is based on a real NASA record: an {event.classType} flare on{' '}
+          {event.date}.” <span className="badge badge-real pxw-badge"><Icon name="globe" scale={1} /> REAL NASA</span>
         </p>
       )}
       {cid === 'G' && (
         <p className="modal__nasa">
-          <span aria-hidden="true">🌱</span>{' '}
+          <Icon name="plant" scale={1} />{' '}
           {isLastSol
             ? '“Plants need time. The harvest comes after the mission ends.”'
             : '“Plants are growing. Harvest at the start of the next Sol.”'}
@@ -41,16 +42,16 @@ export default function ResultModal({ state, cid, opt, onContinue }) {
       )}
       {cid === 'M' && (
         <p className="modal__nasa">
-          <span aria-hidden="true">📡</span>{' '}
+          <Icon name="radio" scale={1} />{' '}
           {isLastSol
             ? '“Message sent. Earth’s reply comes after the mission ends.”'
             : '“Message sent. A reply comes next Sol.”'}{' '}
-          “Real signals take about 4 to 24 minutes one way.” <span className="badge badge-real">🟦 REAL NASA</span>
+          “Real signals take about 4 to 24 minutes one way.” <span className="badge badge-real pxw-badge"><Icon name="globe" scale={1} /> REAL NASA</span>
         </p>
       )}
 
       <div className="modal__actions">
-        <button type="button" className="btn-primary" onClick={onContinue}>
+        <button type="button" className="pxw-btn pxw-btn--go" onClick={onContinue}>
           Continue
         </button>
       </div>

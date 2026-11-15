@@ -1,3 +1,5 @@
+import Icon from './Icon.jsx';
+
 // Real NASA Mars photo slot (CLAUDE.md section 9, Prompt 1B.3b).
 // Drop the file at src/assets/mars-landing.jpg and it appears automatically.
 // Until then a plain placeholder panel shows. Nothing breaks if the file is missing.
@@ -23,7 +25,7 @@ export default function MarsPhoto({ alt, caption }) {
     <figure className="mars-photo">
       <img src={PHOTO_URL} alt={alt} />
       <figcaption className="mars-photo__caption">
-        <span className="badge badge-real">🟦 REAL NASA</span> {caption}
+        <span className="badge badge-real"><Icon name="globe" scale={1} /> REAL NASA</span> {caption}
       </figcaption>
     </figure>
   );
