@@ -2,6 +2,9 @@ import { CHALLENGES } from '../game/challenges.js';
 import { previewChoice } from '../game/game.js';
 import Modal from './Modal.jsx';
 import EffectChips from './EffectChips.jsx';
+import Icon from './Icon.jsx';
+import PxIcon from './PxIcon.jsx';
+import { METER_ICON8 } from '../pixel/icons8.js';
 import { METER_INFO, NIGHT_NOTE, ARRIVING_LABEL } from './kidText.js';
 
 const ROWS = ['O', 'W', 'P', 'C', 'S'];
@@ -60,10 +63,10 @@ export default function ConfirmModal({ state, cid, opt, onConfirm, onCancel }) {
             return (
               <tr key={key} className={changed ? 'is-changed' : ''}>
                 <th scope="row">
-                  <span aria-hidden="true">{METER_INFO[key].icon}</span> {METER_INFO[key].label}
+                  <PxIcon name={METER_ICON8[key]} /> {METER_INFO[key].label}
                 </th>
                 <td>{now}</td>
-                <td aria-hidden="true">{changed ? '→' : ''}</td>
+                <td aria-hidden="true">{changed ? <Icon name="arrow-right" scale={1} /> : ''}</td>
                 <td>{changed ? next : <span className="preview-table__same">no change</span>}</td>
               </tr>
             );
@@ -86,32 +89,32 @@ export default function ConfirmModal({ state, cid, opt, onConfirm, onCancel }) {
 
       {cid === 'R' && option.sheltered && !isLastSol && (
         <p className="modal__note is-safe">
-          <span aria-hidden="true">☂</span> The crew will be sheltered from the storm.
+          <Icon name="shelter" scale={1} /> The crew will be sheltered from the storm.
         </p>
       )}
 
       {failed && (
         <p className="warning-danger" role="alert">
-          <span aria-hidden="true">⚠</span> CAREFUL! If you choose this, the mission ends.
+          <Icon name="warning" scale={1} /> CAREFUL! If you choose this, the mission ends.
           {failReason ? ` The crew would run out of ${failReason}.` : ''}
         </p>
       )}
       {isLastSol && cid === 'G' && (
         <p className="warning-danger">
-          <span aria-hidden="true">⚠</span> Plants need time. This harvest comes after the mission ends.
+          <Icon name="warning" scale={1} /> Plants need time. This harvest comes after the mission ends.
         </p>
       )}
       {isLastSol && cid === 'M' && (
         <p className="warning-danger">
-          <span aria-hidden="true">⚠</span> Earth's reply comes after the mission ends.
+          <Icon name="warning" scale={1} /> Earth's reply comes after the mission ends.
         </p>
       )}
 
       <div className="modal__actions">
-        <button type="button" className="btn-primary" onClick={onConfirm}>
+        <button type="button" className="pxw-btn pxw-btn--go" onClick={onConfirm}>
           Confirm
         </button>
-        <button type="button" onClick={onCancel}>
+        <button type="button" className="pxw-btn" onClick={onCancel}>
           Change choice
         </button>
       </div>

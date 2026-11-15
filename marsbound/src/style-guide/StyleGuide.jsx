@@ -123,29 +123,29 @@ export default function StyleGuide() {
         ))}
       </Section>
 
-      <Section title="2. Type" note="Three fonts, three jobs. Nothing under 18px.">
+      <Section title="2. Type" note="One font: VT323 (Press Start 2P for big titles). Nothing under 18px.">
         <div className="sg-grid sg-grid--wide">
           <Card>
-            <h3>--font-ui · Pixelify Sans (default)</h3>
+            <h3>--font-ui · VT323 (default)</h3>
             <p className="sg-type-ui">Mission Control: Oxygen is low.</p>
             <p className="sg-type-ui" style={{ fontWeight: 700 }}>Bold, for Low and Critical chips.</p>
           </Card>
           <Card>
-            <h3>--font-reading · Nunito (NASA drawer text only)</h3>
+            <h3>--font-reading · VT323 (NASA drawer text)</h3>
             <p className="sg-type-reading">A tool called RAD counts radiation on the ground. Mars has a thin air layer.</p>
           </Card>
           <Card>
-            <h3>--font-stat · Press Start 2P (values and Sol only)</h3>
+            <h3>--font-stat · VT323 (values and Sol)</h3>
             <p className="sg-type-stat">75 · SOL 2</p>
           </Card>
           <Card>
-            <h3>Digits at 18px (Nunito Bold via unicode-range)</h3>
+            <h3>Digits at 18px (Inter)</h3>
             <p className="sg-type-ui" style={{ fontSize: 18 }}>0123456789 · +5 −5 +15 −12 · Sol 3</p>
-            <h3>Same line in Pixelify Sans only</h3>
+            <h3>Same line again</h3>
             <p style={{ fontSize: 18, fontFamily: 'var(--font-pixel-only)' }}>0123456789 · +5 −5 +15 −12 · Sol 3</p>
           </Card>
           <Card>
-            <h3>Glyph check, Pixelify Sans</h3>
+            <h3>Glyph check, Inter</h3>
             <p className="sg-type-ui">−5 +20 · ’ “quote” 0.67 mSv</p>
             <p className="sg-type-ui sg-note">Not in the font (fall back): ← → ✓ ★</p>
           </Card>

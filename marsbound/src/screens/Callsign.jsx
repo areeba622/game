@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import '../styles/pixel-title.css';
+import Icon from '../components/Icon.jsx';
+import TitleScene from '../components/TitleScene.jsx';
 
 // Screen 2 — Callsign (CLAUDE.md 8.1, docs/WIREFRAMES.md).
 // The nickname lives in memory only: no localStorage, cookies or server.
@@ -43,58 +46,62 @@ export default function Callsign({ actions }) {
   }
 
   return (
-    <main className="screen screen-callsign">
-      <form className="card callsign-card" onSubmit={handleContinue} noValidate>
-        <h1 id="callsign-question" className="callsign-question">
-          What should we call you, Commander?
-        </h1>
+    <main className="ts cs">
+      <TitleScene />
+      <div className="cs-stage">
+        <form className="cs-panel" onSubmit={handleContinue} noValidate>
+          <h1 id="callsign-question" className="cs-question">
+            What should we call you, Commander?
+          </h1>
 
-        <input
-          type="text"
-          value={nickname}
-          onChange={handleChange}
-          aria-labelledby="callsign-question"
-          aria-describedby={showError ? 'callsign-hint callsign-error' : 'callsign-hint'}
-          aria-invalid={showError}
-          autoComplete="off"
-          autoCapitalize="words"
-          spellCheck={false}
-          placeholder="Nickname"
-        />
-        <p id="callsign-hint" className="callsign-hint">
-          Use a nickname, not your real name.
-        </p>
-
-        <div className="callsign-chips">
-          <span className="callsign-try">Try:</span>
-          {CHIPS.map((name) => (
-            <button
-              key={name}
-              type="button"
-              className="chip"
-              aria-pressed={cleanName(nickname) === name}
-              onClick={() => fillChip(name)}
-            >
-              {name}
-            </button>
-          ))}
-        </div>
-
-        <div className="callsign-actions">
-          <button type="submit" className="btn-primary">
-            Continue
-          </button>
-          <button type="button" onClick={() => actions.startMission('Commander')}>
-            Skip
-          </button>
-        </div>
-
-        {showError && (
-          <p id="callsign-error" className="callsign-error" role="alert">
-            <span aria-hidden="true">⚠</span> {ERROR_TEXT}
+          <input
+            type="text"
+            className="cs-input"
+            value={nickname}
+            onChange={handleChange}
+            aria-labelledby="callsign-question"
+            aria-describedby={showError ? 'callsign-hint callsign-error' : 'callsign-hint'}
+            aria-invalid={showError}
+            autoComplete="off"
+            autoCapitalize="words"
+            spellCheck={false}
+            placeholder="Nickname"
+          />
+          <p id="callsign-hint" className="cs-hint">
+            Use a nickname, not your real name.
           </p>
-        )}
-      </form>
+
+          <div className="cs-chips">
+            <span className="cs-try">Try:</span>
+            {CHIPS.map((name) => (
+              <button
+                key={name}
+                type="button"
+                className="cs-chip"
+                aria-pressed={cleanName(nickname) === name}
+                onClick={() => fillChip(name)}
+              >
+                {name}
+              </button>
+            ))}
+          </div>
+
+          <div className="cs-actions">
+            <button type="submit" className="ts-btn">
+              Continue
+            </button>
+            <button type="button" className="ts-link" onClick={() => actions.startMission('Commander')}>
+              Skip
+            </button>
+          </div>
+
+          {showError && (
+            <p id="callsign-error" className="cs-error" role="alert">
+              <Icon name="warning" scale={1} /> {ERROR_TEXT}
+            </p>
+          )}
+        </form>
+      </div>
     </main>
   );
 }

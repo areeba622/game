@@ -1,4 +1,5 @@
-import { SPACE_WEATHER_LABEL } from '../data/nasaContent.js';
+import { useDonki, stormBadgeText } from './useDonki.js';
+import DonkiDetails from './DonkiDetails.jsx';
 import { STORM_SIZE } from './kidText.js';
 
 // Storm card (Dashboard). Based on a real flare record; never called "live".
@@ -7,6 +8,7 @@ export default function StormForecast({ state }) {
   const stormLog = log.find((entry) => entry.kind === 'storm');
   const passed = sol >= 3 || Boolean(stormLog);
   const size = STORM_SIZE[severity];
+  const donki = useDonki(event);
 
   return (
     <section className="card storm" aria-labelledby="storm-title">
@@ -15,7 +17,7 @@ export default function StormForecast({ state }) {
           <span aria-hidden="true">☀</span> STORM FORECAST
         </h2>
         <span className="badge badge-real">
-          🟦 {SPACE_WEATHER_LABEL}
+          🟦 {stormBadgeText(donki.origin)}
           {event?.date ? ` · ${event.date}` : ''}
         </span>
       </div>
@@ -33,6 +35,7 @@ export default function StormForecast({ state }) {
           Based on a real <strong>{event.classType}</strong> solar flare, {event.date}.
         </p>
       )}
+      {donki.origin === 'api' && <DonkiDetails details={donki.details} />}
 
       {passed ? (
         <p className={`storm__status ${stormLog ? 'is-hit' : 'is-safe'}`}>

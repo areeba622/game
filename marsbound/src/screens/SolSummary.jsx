@@ -1,8 +1,12 @@
 import { CHALLENGES } from '../game/challenges.js';
+import '../styles/pixelscreens.css';
 import MeterPanel from '../components/MeterPanel.jsx';
 import EffectChips from '../components/EffectChips.jsx';
 import { commanderName } from '../components/commander.js';
 import { ARRIVING_LABEL } from '../components/kidText.js';
+
+const CHALLENGE_ICON = { L: 'life-support', R: 'radiation', W: 'power-budget', G: 'greenhouse', M: 'earth-signal' };
+import Icon from '../components/Icon.jsx';
 
 // Log text uses a plain hyphen for minus; show a real minus sign.
 const prettyMinus = (text) => text.replace(/-(\d)/g, '−$1');
@@ -22,17 +26,17 @@ export default function SolSummary({ state, actions }) {
   if (sol === 1) {
     stormLine = (
       <>
-        <span aria-hidden="true">☀</span> Storm: not yet. It comes at the end of Sol 2.
+        <Icon name="sun" scale={1} /> Storm: not yet. It comes at the end of Sol 2.
       </>
     );
   } else if (sol === 2) {
     stormLine = stormEntry ? (
       <>
-        <span aria-hidden="true">🌩</span> {prettyMinus(stormEntry.text)}
+        <Icon name="storm" scale={1} /> {prettyMinus(stormEntry.text)}
       </>
     ) : (
       <>
-        <span aria-hidden="true">☂</span> Your crew was sheltered. No harm.
+        <Icon name="shelter" scale={1} /> Your crew was sheltered. No harm.
       </>
     );
   }
@@ -49,7 +53,7 @@ export default function SolSummary({ state, actions }) {
         <ul className="summary-list">
           {didToday.map((h) => (
             <li key={h.cid}>
-              <span aria-hidden="true">{CHALLENGES[h.cid].icon}</span> {CHALLENGES[h.cid].title}: {h.opt}.{' '}
+              <Icon name={CHALLENGE_ICON[h.cid]} scale={1} /> {CHALLENGES[h.cid].title}: {h.opt}.{' '}
               {CHALLENGES[h.cid].options[h.opt].title}
             </li>
           ))}
@@ -61,7 +65,7 @@ export default function SolSummary({ state, actions }) {
         <ul className="summary-list">
           {nightLines.map((e, i) => (
             <li key={i}>
-              <span aria-hidden="true">{e.kind === 'upkeep' ? '🌙' : '⚠'}</span> {prettyMinus(e.text)}
+              <Icon name={e.kind === 'upkeep' ? 'moon' : 'warning'} scale={1} /> {prettyMinus(e.text)}
             </li>
           ))}
           {stormLine && <li className={stormEntry ? 'is-bad' : ''}>{stormLine}</li>}
@@ -74,7 +78,7 @@ export default function SolSummary({ state, actions }) {
       {state.pending.length > 0 && (
         <section className="card" aria-labelledby="sum-arriving">
           <h2 id="sum-arriving" className="summary-heading">
-            <span aria-hidden="true">⏳</span> {isLastSol ? 'ARRIVES AFTER THE MISSION' : 'ARRIVING TOMORROW'}
+            <Icon name="hourglass" scale={1} /> {isLastSol ? 'ARRIVES AFTER THE MISSION' : 'ARRIVING TOMORROW'}
           </h2>
           <ul className="summary-list">
             {state.pending.map((p, i) => (

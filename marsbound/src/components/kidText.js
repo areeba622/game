@@ -6,12 +6,13 @@
 
 export const CHALLENGE_ORDER = ['L', 'R', 'W', 'G', 'M'];
 
+// `hook` is the one question shown inside an open station door on the Dashboard.
 export const CARD_TEXT = {
-  L: { short: 'Fix oxygen', warning: 'Costs 8 Oxygen each night if not done' },
-  R: { short: 'Protect crew', warning: 'Storm at end of Sol 2' },
-  W: { short: 'Share power', warning: 'Costs 4 Power each night if not done' },
-  G: { short: 'Plants need 1 Sol to grow' },
-  M: { short: 'Reply takes 1 Sol' },
+  L: { short: 'Fix oxygen', hook: 'How will you keep everyone breathing?', warning: 'Costs 8 Oxygen each night if not done' },
+  R: { short: 'Protect crew', hook: 'Do you shelter, shield, or keep working?', warning: 'Storm at end of Sol 2' },
+  W: { short: 'Share power', hook: 'Who gets power first?', warning: 'Costs 4 Power each night if not done' },
+  G: { short: 'Plants need 1 Sol to grow', hook: 'Will you plant now?' },
+  M: { short: 'Reply takes 1 Sol', hook: 'What will the crew do while they wait?' },
 };
 
 export const METER_INFO = {

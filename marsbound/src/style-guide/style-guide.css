@@ -119,7 +119,7 @@
 .sg-cb--tritan { filter: url('#sg-tritan'); }
 
 .sg {
-  --font-pixel-only: "Pixelify Sans", monospace;
+  --font-pixel-only: "VT323", monospace;
 }
 
 .sg-type-ui { font-family: var(--font-ui); }
